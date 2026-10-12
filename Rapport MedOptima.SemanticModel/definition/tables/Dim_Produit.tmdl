@@ -1,0 +1,58 @@
+table Dim_Produit
+	lineageTag: a6c7aed7-d699-4966-a256-2de6e3bf25b6
+
+	column ID_Produit
+		dataType: string
+		lineageTag: 0a1c39a3-7a3b-494e-9a4a-f025814829b3
+		summarizeBy: none
+		sourceColumn: ID_Produit
+
+		annotation SummarizationSetBy = Automatic
+
+	column Produit
+		dataType: string
+		lineageTag: 3d51ee91-7e5b-4b38-bc38-2a71ea751c0a
+		summarizeBy: none
+		sourceColumn: Produit
+
+		annotation SummarizationSetBy = Automatic
+
+	column Categorie
+		dataType: string
+		lineageTag: e90d58a5-4d5a-45d6-b189-cb5bbd4638df
+		summarizeBy: none
+		sourceColumn: Categorie
+
+		annotation SummarizationSetBy = Automatic
+
+	column Prix_Unitaire_HT
+		dataType: double
+		lineageTag: 03d0b10f-c571-4cb2-a9fb-da57256c29b1
+		summarizeBy: sum
+		sourceColumn: Prix_Unitaire_HT
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Cout_Unitaire_HT
+		dataType: double
+		lineageTag: abead897-0a43-4d12-bef9-b31b8ba90918
+		summarizeBy: sum
+		sourceColumn: Cout_Unitaire_HT
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition Dim_Produit = m
+		mode: import
+		source =
+				let
+				  Source = fx_loadData("T_Dim_Produit"),
+				  #"Type de colonne changé" = Table.TransformColumnTypes(Source, {{"ID_Produit", type text}, {"Produit", type text}, {"Categorie", type text}, {"Prix_Unitaire_HT", type number}, {"Cout_Unitaire_HT", type number}})
+				in
+				  #"Type de colonne changé"
+
+	annotation PBI_ResultType = Table
+

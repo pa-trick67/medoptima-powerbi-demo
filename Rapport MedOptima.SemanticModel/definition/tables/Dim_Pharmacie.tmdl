@@ -1,0 +1,55 @@
+table Dim_Pharmacie
+	lineageTag: 25a5be18-b80d-4729-956c-d9cfd4cad873
+
+	column ID_Pharmacie
+		dataType: string
+		lineageTag: 2f4dae91-d28b-477d-8fe9-2c2cae91d8b2
+		summarizeBy: none
+		sourceColumn: ID_Pharmacie
+
+		annotation SummarizationSetBy = Automatic
+
+	column Pharmacie
+		dataType: string
+		lineageTag: 76a2358d-7c71-4212-9b41-7637449d9354
+		summarizeBy: none
+		sourceColumn: Pharmacie
+
+		annotation SummarizationSetBy = Automatic
+
+	column Ville
+		dataType: string
+		lineageTag: 3b5fc061-47e4-4931-a45c-f63df533ae20
+		summarizeBy: none
+		sourceColumn: Ville
+
+		annotation SummarizationSetBy = Automatic
+
+	column Code_Postal
+		dataType: int64
+		formatString: 0
+		lineageTag: 5c2a0685-c339-441f-ad0b-b593f74461b6
+		summarizeBy: none
+		sourceColumn: Code_Postal
+
+		annotation SummarizationSetBy = Automatic
+
+	column Type_Pharmacie
+		dataType: string
+		lineageTag: 0dbfa64d-ad1d-4fac-9773-41f971560a40
+		summarizeBy: none
+		sourceColumn: Type_Pharmacie
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Dim_Pharmacie = m
+		mode: import
+		source =
+				let
+				  Source = fx_loadData("T_Dim_Pharmacie"),
+				  #"Type de colonne changé" = Table.TransformColumnTypes(Source, {{"ID_Pharmacie", type text}, {"Pharmacie", type text}, {"Ville", type text}, {"Code_Postal", Int64.Type}, {"Type_Pharmacie", type text}})
+				in
+				  #"Type de colonne changé"
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,96 @@
+table Fait_Ventes
+	lineageTag: d385910a-fac1-4d75-ab06-12e7fc94b939
+
+	column N_Commande
+		dataType: string
+		lineageTag: 12e25922-26f1-448c-86d1-045a167d8e9b
+		summarizeBy: none
+		sourceColumn: N_Commande
+
+		annotation SummarizationSetBy = Automatic
+
+	column Date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 2cc2f559-50b6-4a60-8809-c093e07bd3bb
+		summarizeBy: none
+		sourceColumn: Date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column ID_Pharmacie
+		dataType: string
+		lineageTag: fe50d72d-cbfa-4c28-89b5-1df0330b3e5d
+		summarizeBy: none
+		sourceColumn: ID_Pharmacie
+
+		annotation SummarizationSetBy = Automatic
+
+	column ID_Produit
+		dataType: string
+		lineageTag: 4fca7ba0-b358-422f-ace6-b2ef610e2c9d
+		summarizeBy: none
+		sourceColumn: ID_Produit
+
+		annotation SummarizationSetBy = Automatic
+
+	column ID_Commercial
+		dataType: string
+		lineageTag: beb1fb12-e602-490d-b7f9-29e3ce315992
+		summarizeBy: none
+		sourceColumn: ID_Commercial
+
+		annotation SummarizationSetBy = Automatic
+
+	column Quantite
+		dataType: int64
+		formatString: 0
+		lineageTag: 53aef970-9ce5-4397-bdaa-563abb4a4115
+		summarizeBy: sum
+		sourceColumn: Quantite
+
+		annotation SummarizationSetBy = Automatic
+
+	column Taux_Remise
+		dataType: double
+		lineageTag: a64782b0-0496-4f4c-80ad-126b495eb9e0
+		summarizeBy: sum
+		sourceColumn: Taux_Remise
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column CA_HT
+		dataType: double
+		lineageTag: 1d625252-9ada-4df4-81e1-11f50a5791f0
+		summarizeBy: sum
+		sourceColumn: CA_HT
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Cout_HT
+		dataType: double
+		lineageTag: f7e1c57f-27cb-45c5-8ba9-07dc2b4e028a
+		summarizeBy: sum
+		sourceColumn: Cout_HT
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition Fait_Ventes = m
+		mode: import
+		source =
+				let
+				  Fait_Ventes = fx_loadData("T_Fait_Ventes"),
+				  #"Type de colonne changé" = Table.TransformColumnTypes(Fait_Ventes, {{"N_Commande", type text}, {"Date", type date}, {"ID_Pharmacie", type text}, {"ID_Produit", type text}, {"ID_Commercial", type text}, {"Quantite", Int64.Type}, {"Taux_Remise", type number}, {"CA_HT", type number}, {"Cout_HT", type number}})
+				in
+				  #"Type de colonne changé"
+
+	annotation PBI_ResultType = Table
+

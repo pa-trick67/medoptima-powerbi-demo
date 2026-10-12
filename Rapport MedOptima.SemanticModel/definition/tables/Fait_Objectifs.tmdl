@@ -1,0 +1,50 @@
+table Fait_Objectifs
+	lineageTag: 2b524d2f-fec1-47cf-9501-bb6d7e59bd13
+
+	column Période
+		dataType: int64
+		formatString: 0
+		lineageTag: c2481d3e-fb9d-4d2a-8117-367a6304f8f4
+		summarizeBy: sum
+		sourceColumn: Période
+
+		annotation SummarizationSetBy = Automatic
+
+	column ID_Commercial
+		dataType: string
+		lineageTag: 01f16a4c-b728-41b9-b2fa-14667430560b
+		summarizeBy: none
+		sourceColumn: ID_Commercial
+
+		annotation SummarizationSetBy = Automatic
+
+	column Objectif
+		dataType: int64
+		formatString: 0
+		lineageTag: caca7e09-b373-4330-a4dd-db00873c2a23
+		summarizeBy: sum
+		sourceColumn: Objectif
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Fait_Objectifs = m
+		mode: import
+		source =
+				let
+				  Fait_Objectifs = fx_loadData("Fait_Objectifs", false),
+				  #"Table transposée" = Table.Transpose(Fait_Objectifs),
+				  #"Rempli vers le bas" = Table.FillDown(#"Table transposée", {"Column1"}),
+				  #"Colonne personnalisée ajoutée" = Table.AddColumn(#"Rempli vers le bas", "Période", each if [Column2] = null then null  else [Column2] & Text.End(Text.Trim([Column1]),5)),
+				  #"Type de colonne changé avec les paramètres régionaux" = Table.TransformColumnTypes(#"Colonne personnalisée ajoutée", {{"Période", type date}}, "fr-FR"),
+				  transCol = Table.TransformColumns(#"Type de colonne changé avec les paramètres régionaux",{{"Période", each Int64.From(Date.ToText(_, "yyyyMM")), Int64.Type}}),
+				  #"En-têtes promus" = Table.PromoteHeaders(transCol, [PromoteAllScalars = true]),
+				  #"Colonnes renommées" = Table.RenameColumns(#"En-têtes promus", {{"Column15", "Période"}}),
+				  #"Autres colonnes supprimées" = Table.SelectColumns(#"Colonnes renommées", {"Période", "C12", "C11", "C10", "C09", "C08", "C07", "C06", "C05", "C04", "C03", "C02", "C01"}),
+				  #"Lignes filtrées" = Table.SelectRows(#"Autres colonnes supprimées", each [Période] <> null and [Période] <> ""),
+				  #"Autres colonnes supprimées du tableau croisé dynamique" = Table.UnpivotOtherColumns(#"Lignes filtrées", {"Période"}, "ID_Commercial", "Objectif"),
+				  #"Type de colonne changé" = Table.TransformColumnTypes(#"Autres colonnes supprimées du tableau croisé dynamique", {{"Objectif", Int64.Type}})
+				in
+				  #"Type de colonne changé"
+
+	annotation PBI_ResultType = Table
+

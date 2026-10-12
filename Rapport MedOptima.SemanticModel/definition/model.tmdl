@@ -1,0 +1,25 @@
+model Model
+	culture: fr-FR
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: fr-FR
+	valueFilterBehavior: independent
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 0
+
+annotation PBI_QueryOrder = ["Fait_Ventes","Fait_Objectifs","Fait_Stocks","Dim_Produit","Dim_Pharmacie","Dim_Commercial","Dim_Region","fx_loadData"]
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table Fait_Ventes
+ref table Fait_Objectifs
+ref table Fait_Stocks
+ref table Dim_Produit
+ref table Dim_Pharmacie
+ref table Dim_Commercial
+ref table Dim_Region
+
+ref cultureInfo fr-FR
+

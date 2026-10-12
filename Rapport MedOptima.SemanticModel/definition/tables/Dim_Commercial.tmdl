@@ -1,0 +1,57 @@
+table Dim_Commercial
+	lineageTag: 691d95f3-4de5-4cbf-9923-7c74db3ac98b
+
+	column ID_Commercial
+		dataType: string
+		lineageTag: ab695bd9-3790-4152-8545-91a251a9d59e
+		summarizeBy: none
+		sourceColumn: ID_Commercial
+
+		annotation SummarizationSetBy = Automatic
+
+	column Nom_Commercial
+		dataType: string
+		lineageTag: 204eeebf-8f5f-4de5-ab3f-dd28eeb5fe2c
+		summarizeBy: none
+		sourceColumn: Nom_Commercial
+
+		annotation SummarizationSetBy = Automatic
+
+	column ID_Region
+		dataType: string
+		lineageTag: a5b62dff-ba4a-44dc-8a6b-3df6c6434578
+		summarizeBy: none
+		sourceColumn: ID_Region
+
+		annotation SummarizationSetBy = Automatic
+
+	column Email
+		dataType: string
+		lineageTag: 44d9d763-f7c7-4f88-8346-59228411943b
+		summarizeBy: none
+		sourceColumn: Email
+
+		annotation SummarizationSetBy = Automatic
+
+	column Date_Embauche
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 7bfbb5a9-7319-4502-86e4-56079a2b2e7f
+		summarizeBy: none
+		sourceColumn: Date_Embauche
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	partition Dim_Commercial = m
+		mode: import
+		source =
+				let
+				  Source = fx_loadData("T_Dim_Commercial"),
+				  #"Type de colonne changé" = Table.TransformColumnTypes(Source, {{"ID_Commercial", type text}, {"Nom_Commercial", type text}, {"ID_Region", type text}, {"Email", type text}, {"Date_Embauche", type date}})
+				in
+				  #"Type de colonne changé"
+
+	annotation PBI_ResultType = Table
+

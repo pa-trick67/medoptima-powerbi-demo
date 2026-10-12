@@ -1,0 +1,61 @@
+table Fait_Stocks
+	lineageTag: 8863728b-8317-470e-beb9-6f17ae1262e7
+
+	column Date_Stock
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 0b9a9943-23e2-462d-b3ba-593cfd026826
+		summarizeBy: none
+		sourceColumn: Date_Stock
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column ID_Produit
+		dataType: string
+		lineageTag: 0c06046a-7e93-4064-b0d3-9724d5652b8f
+		summarizeBy: none
+		sourceColumn: ID_Produit
+
+		annotation SummarizationSetBy = Automatic
+
+	column ID_Region
+		dataType: string
+		lineageTag: 66b53f83-4686-4dc7-99e9-2a8003da8aca
+		summarizeBy: none
+		sourceColumn: ID_Region
+
+		annotation SummarizationSetBy = Automatic
+
+	column Stock_Unites
+		dataType: int64
+		formatString: 0
+		lineageTag: 88be28e2-df8f-4d98-bacc-f11941c502d8
+		summarizeBy: sum
+		sourceColumn: Stock_Unites
+
+		annotation SummarizationSetBy = Automatic
+
+	column Valeur_Stock_HT
+		dataType: double
+		lineageTag: 9aa55c29-97e1-4ef2-9910-b220803f4896
+		summarizeBy: sum
+		sourceColumn: Valeur_Stock_HT
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition Fait_Stocks = m
+		mode: import
+		source = ```
+				let 
+				    Fait_Stock = fx_loadData("T_Fait_Stocks"),
+				  #"Type de colonne changé" = Table.TransformColumnTypes(Fait_Stock, {{"Date_Stock", type date}, {"ID_Produit", type text}, {"ID_Region", type text}, {"Stock_Unites", Int64.Type}, {"Valeur_Stock_HT", type number}})
+				in 
+				    #"Type de colonne changé"
+				```
+
+	annotation PBI_ResultType = Table
+

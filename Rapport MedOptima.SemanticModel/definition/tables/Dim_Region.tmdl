@@ -1,0 +1,46 @@
+table Dim_Region
+	lineageTag: b4807c41-7983-44fb-ac98-1e5f203bbb7e
+
+	column ID_Region
+		dataType: string
+		lineageTag: 79650964-f4ce-4bd2-9c48-835adbc651bc
+		summarizeBy: none
+		sourceColumn: ID_Region
+
+		annotation SummarizationSetBy = Automatic
+
+	column Region
+		dataType: string
+		lineageTag: 91d70add-7cf4-4a2b-98d0-8059c3cab42f
+		summarizeBy: none
+		sourceColumn: Region
+
+		annotation SummarizationSetBy = Automatic
+
+	column Directeur_Regional
+		dataType: string
+		lineageTag: d578a5d5-965b-407e-9a31-f0b62799754c
+		summarizeBy: none
+		sourceColumn: Directeur_Regional
+
+		annotation SummarizationSetBy = Automatic
+
+	column Email_Directeur
+		dataType: string
+		lineageTag: 93a079e3-7d44-49ab-ab9c-55c6176e7405
+		summarizeBy: none
+		sourceColumn: Email_Directeur
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Dim_Region = m
+		mode: import
+		source =
+				let
+				  Source = fx_loadData("T_Dim_Region"),
+				  #"Type de colonne changé" = Table.TransformColumnTypes(Source, {{"ID_Region", type text}, {"Region", type text}, {"Directeur_Regional", type text}, {"Email_Directeur", type text}})
+				in
+				  #"Type de colonne changé"
+
+	annotation PBI_ResultType = Table
+

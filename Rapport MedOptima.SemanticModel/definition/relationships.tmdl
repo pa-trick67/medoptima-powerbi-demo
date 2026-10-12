@@ -1,0 +1,28 @@
+relationship AutoDetected_7fd70fcb-aec1-45be-bbcb-2af4906bf31d
+	fromColumn: Fait_Ventes.ID_Pharmacie
+	toColumn: Dim_Pharmacie.ID_Pharmacie
+
+relationship AutoDetected_54676c72-33fd-4dea-97b5-c5ce8303e89f
+	fromColumn: Fait_Ventes.ID_Produit
+	toColumn: Dim_Produit.ID_Produit
+
+relationship AutoDetected_7cdfc5e5-17ea-4443-96ab-1589b20e0a99
+	fromColumn: Fait_Stocks.ID_Produit
+	toColumn: Dim_Produit.ID_Produit
+
+relationship AutoDetected_0ac02ef8-923b-441b-94b1-61d38db55c0c
+	fromColumn: Fait_Ventes.ID_Commercial
+	toColumn: Dim_Commercial.ID_Commercial
+
+relationship AutoDetected_0d6d379f-0f49-4cfe-a40c-340fcde3fd26
+	fromColumn: Fait_Objectifs.ID_Commercial
+	toColumn: Dim_Commercial.ID_Commercial
+
+relationship AutoDetected_61ccce31-5605-44fc-8369-bc252cadec00
+	fromColumn: Fait_Stocks.ID_Region
+	toColumn: Dim_Region.ID_Region
+
+relationship AutoDetected_caa012c3-f762-43e1-9008-984e5e4df304
+	fromColumn: Dim_Commercial.ID_Region
+	toColumn: Dim_Region.ID_Region
+
