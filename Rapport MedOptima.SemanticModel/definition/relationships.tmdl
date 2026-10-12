@@ -26,3 +26,16 @@ relationship AutoDetected_caa012c3-f762-43e1-9008-984e5e4df304
 	fromColumn: Dim_Commercial.ID_Region
 	toColumn: Dim_Region.ID_Region
 
+relationship 11d81f1d-ce98-49d7-ac2b-f0686d4a5bca
+	fromColumn: Fait_Ventes.Date
+	toColumn: Dim_Date.Date
+
+relationship 1b6110cf-1028-435e-af42-add95064a76e
+	fromColumn: Fait_Stocks.Date_Stock
+	toColumn: Dim_Date.Date
+
+relationship 82f04b20-0487-4167-9d25-3eac16eceb81
+	toCardinality: many
+	fromColumn: Fait_Objectifs.Période
+	toColumn: Dim_Date.AnnéeMoisNum
+

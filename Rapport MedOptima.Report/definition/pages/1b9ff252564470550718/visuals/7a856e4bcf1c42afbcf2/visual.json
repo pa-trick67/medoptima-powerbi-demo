@@ -1,0 +1,88 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.4.0/schema.json",
+  "name": "7a856e4bcf1c42afbcf2",
+  "position": {
+    "x": 24,
+    "y": 14,
+    "z": 1,
+    "width": 900,
+    "height": 50,
+    "tabOrder": 10
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "MedOptima · Pilotage commercial   ",
+                    "textStyle": {
+                      "fontSize": "20pt",
+                      "fontWeight": "600",
+                      "color": "#1A1D24",
+                      "fontFamily": "Segoe UI"
+                    }
+                  },
+                  {
+                    "value": "réalisé vs objectif",
+                    "textStyle": {
+                      "fontSize": "11pt",
+                      "color": "#4A5262",
+                      "fontFamily": "Segoe UI"
+                    }
+                  }
+                ],
+                "horizontalTextAlignment": "left"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "background": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "border": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "visualHeader": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

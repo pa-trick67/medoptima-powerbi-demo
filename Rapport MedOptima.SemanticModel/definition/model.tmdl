@@ -20,6 +20,8 @@ ref table Dim_Produit
 ref table Dim_Pharmacie
 ref table Dim_Commercial
 ref table Dim_Region
+ref table Dim_Date
+ref table _Mesures
 
 ref cultureInfo fr-FR
 

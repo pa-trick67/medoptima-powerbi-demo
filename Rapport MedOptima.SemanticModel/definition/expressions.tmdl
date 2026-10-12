@@ -1,9 +1,14 @@
+expression CheminFichier = "D:\03 - Work\KAJY Partners\Conférence Excel BI\MedOptima\MedOptima_Distribution_Donnees.xlsx" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: 20a08c24-ecba-4dba-a4c8-1522d80f86cc
+
+	annotation PBI_ResultType = Text
+
 expression fx_loadData =
 		let
 		    Source = (itemName as text, optional isKindTable as logical) as table =>
 		    [
 		        Classeur = Excel.Workbook(
-		            File.Contents("D:\03 - Work\KAJY Partners\Conférence Excel BI\MedOptima\MedOptima_Distribution_Donnees.xlsx"),
+		            File.Contents(CheminFichier),
 		            null,
 		            true
 		        ),

@@ -1,0 +1,148 @@
+table Dim_Date
+	lineageTag: 0e2fa1a9-114a-4483-939a-15e215cd8389
+	dataCategory: Time
+
+	column Date
+		dataType: dateTime
+		isKey
+		formatString: dd/mm/yyyy
+		lineageTag: 7e2fdb43-ac1d-43c5-b88d-ed08ac0614b8
+		summarizeBy: none
+		sourceColumn: [Date]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Année = YEAR( 'Dim_Date'[Date] )
+		dataType: int64
+		formatString: 0
+		lineageTag: 02ad8d4c-a466-4ef8-98e2-c80b4993a438
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column NumTrimestre = QUARTER( 'Dim_Date'[Date] )
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: bc44e19f-6b17-4c4a-9d4f-929b76a9977b
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Trimestre = "T" & QUARTER( 'Dim_Date'[Date] )
+		dataType: string
+		lineageTag: 4a95d294-b296-4fc7-a756-ff8dae65dfca
+		summarizeBy: none
+		sortByColumn: NumTrimestre
+
+		annotation SummarizationSetBy = Automatic
+
+	column AnnéeTrimestre = FORMAT( 'Dim_Date'[Date], "yyyy" ) & "-T" & QUARTER( 'Dim_Date'[Date] )
+		dataType: string
+		lineageTag: d13e59ab-e303-4707-a3f9-2fa50353e690
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column NumMois = MONTH( 'Dim_Date'[Date] )
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 35b0234d-cf41-4a89-98a4-6a872b39ddb0
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Mois =
+			VAR _Texte = FORMAT( 'Dim_Date'[Date], "mmmm" )
+			RETURN
+				UPPER( LEFT( _Texte, 1 ) ) & MID( _Texte, 2, LEN( _Texte ) )
+		dataType: string
+		lineageTag: 3b26c4f3-f52d-4b74-a48b-c497a685e24a
+		summarizeBy: none
+		sortByColumn: NumMois
+
+		annotation SummarizationSetBy = Automatic
+
+	column MoisCourt =
+			VAR _Texte = FORMAT( 'Dim_Date'[Date], "mmm" )
+			RETURN
+				UPPER( LEFT( _Texte, 1 ) ) & MID( _Texte, 2, LEN( _Texte ) )
+		dataType: string
+		lineageTag: 39d79780-540e-43d4-bc9c-dff5bf3f75a7
+		summarizeBy: none
+		sortByColumn: NumMois
+
+		annotation SummarizationSetBy = Automatic
+
+	column AnnéeMoisNum = YEAR( 'Dim_Date'[Date] ) * 100 + MONTH( 'Dim_Date'[Date] )
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 4fb4393e-d106-4024-9ac0-1bca31ebaa07
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column AnnéeMois = FORMAT( 'Dim_Date'[Date], "yyyy-mm" )
+		dataType: string
+		lineageTag: 1d0f84f5-86f2-49a2-844b-fec142514271
+		summarizeBy: none
+		sortByColumn: AnnéeMoisNum
+
+		annotation SummarizationSetBy = Automatic
+
+	column FinDeMois = EOMONTH( 'Dim_Date'[Date], 0 )
+		dataType: dateTime
+		formatString: dd/mm/yyyy
+		lineageTag: b9f7888a-4ad5-4123-875c-b5088e380ff8
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Jour = DAY( 'Dim_Date'[Date] )
+		dataType: int64
+		formatString: 0
+		lineageTag: e78060d2-afa7-4f02-abbc-9d71c240c89c
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column NumJourSemaine = WEEKDAY( 'Dim_Date'[Date], 2 )
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 39572e7b-7d15-46b3-9791-543dbd36f75a
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column JourSemaine = FORMAT( 'Dim_Date'[Date], "dddd" )
+		dataType: string
+		lineageTag: e1c0e50f-1e62-4db1-bf75-e15d88fe48be
+		summarizeBy: none
+		sortByColumn: NumJourSemaine
+
+		annotation SummarizationSetBy = Automatic
+
+	column EstPassé = 'Dim_Date'[Date] <= TODAY()
+		dataType: boolean
+		lineageTag: 2bb41c07-4f13-433f-a152-e2536a182ab0
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Dim_Date = calculated
+		mode: import
+		source =
+				VAR _MinVentes = MIN( Fait_Ventes[Date] )
+				VAR _MinStocks = MIN( Fait_Stocks[Date_Stock] )
+				VAR _MaxVentes = MAX( Fait_Ventes[Date] )
+				VAR _MaxStocks = MAX( Fait_Stocks[Date_Stock] )
+				VAR _Min = MINX( { _MinVentes, _MinStocks }, [Value] )
+				VAR _Max = MAXX( { _MaxVentes, _MaxStocks }, [Value] )
+				VAR _Debut = IF( ISBLANK( _Min ), DATE( YEAR( TODAY() ), 1, 1 ), DATE( YEAR( _Min ), 1, 1 ) )
+				VAR _Fin = IF( ISBLANK( _Max ), DATE( YEAR( TODAY() ), 12, 31 ), DATE( YEAR( _Max ), 12, 31 ) )
+				RETURN
+					CALENDAR( _Debut, _Fin )
+

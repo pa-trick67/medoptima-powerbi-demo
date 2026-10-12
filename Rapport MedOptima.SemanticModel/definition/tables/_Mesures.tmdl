@@ -1,0 +1,198 @@
+table _Mesures
+	lineageTag: b25f1155-5998-4bee-8148-1ee2de1655f4
+
+	measure 'CA HT' = SUM( Fait_Ventes[CA_HT] )
+		formatString: #,0 \€
+		displayFolder: 01 Ventes
+		lineageTag: 401227a0-326c-4830-b74d-e752198eec3a
+
+	measure 'CA brut HT' = SUMX( Fait_Ventes, Fait_Ventes[Quantite] * RELATED( Dim_Produit[Prix_Unitaire_HT] ) )
+		formatString: #,0 \€
+		displayFolder: 01 Ventes
+		lineageTag: 39392dc5-1990-4103-8105-a052fbd1b54d
+
+	measure 'Remise accordée' = [CA brut HT] - [CA HT]
+		formatString: #,0 \€
+		displayFolder: 01 Ventes
+		lineageTag: 0c3c452e-21c4-46fd-a47d-10155f17804c
+
+	measure 'Taux de remise %' = DIVIDE( [Remise accordée], [CA brut HT] )
+		formatString: 0.0 %
+		displayFolder: 01 Ventes
+		lineageTag: dff9fcad-155c-4028-b820-798d0f17d71b
+
+	measure 'Coût HT' = SUM( Fait_Ventes[Cout_HT] )
+		formatString: #,0 \€
+		displayFolder: 01 Ventes
+		lineageTag: 9dad4ec8-9d1b-42e5-a84c-1ff393e264d4
+
+	measure 'Marge HT' = [CA HT] - [Coût HT]
+		formatString: #,0 \€
+		displayFolder: 01 Ventes
+		lineageTag: 4d8581e3-44bc-450c-80fd-a0413f097ffc
+
+	measure 'Taux de marge %' = DIVIDE( [Marge HT], [CA HT] )
+		formatString: 0.0 %
+		displayFolder: 01 Ventes
+		lineageTag: ed767f30-7b5a-419e-bf6e-3ad08eb9fc57
+
+	measure 'Quantité vendue' = SUM( Fait_Ventes[Quantite] )
+		formatString: #,0
+		displayFolder: 01 Ventes
+		lineageTag: 2a4b9517-8d02-43e7-92d5-1d6ed1b6d312
+
+	measure 'Nb commandes' = DISTINCTCOUNT( Fait_Ventes[N_Commande] )
+		formatString: #,0
+		displayFolder: 01 Ventes
+		lineageTag: 6afdfc7b-ad96-4d14-a506-3be40838d61b
+
+	measure 'Nb lignes de vente' = COUNTROWS( Fait_Ventes )
+		formatString: #,0
+		displayFolder: 01 Ventes
+		lineageTag: ce4913be-c3c6-4d7e-8660-9852a291ab56
+
+	measure 'Panier moyen' = DIVIDE( [CA HT], [Nb commandes] )
+		formatString: #,0 \€
+		displayFolder: 01 Ventes
+		lineageTag: 2b842d6b-5f2c-43b4-828a-aff9005390d7
+
+	measure 'Prix de vente moyen' = DIVIDE( [CA HT], [Quantité vendue] )
+		formatString: #,0.00 \€
+		displayFolder: 01 Ventes
+		lineageTag: 8a11b814-7dcb-4fdb-aa39-c1dd95c78181
+
+	measure 'Nb pharmacies actives' = DISTINCTCOUNT( Fait_Ventes[ID_Pharmacie] )
+		formatString: #,0
+		displayFolder: 01 Ventes
+		lineageTag: 4c461476-d719-46ab-bb1f-b19d0655d39e
+
+	measure 'Nb produits vendus' = DISTINCTCOUNT( Fait_Ventes[ID_Produit] )
+		formatString: #,0
+		displayFolder: 01 Ventes
+		lineageTag: 75db41a1-b50d-4bf7-9aa5-a71d77fe0ec4
+
+	measure 'CA HT N-1' = CALCULATE( [CA HT], SAMEPERIODLASTYEAR( 'Dim_Date'[Date] ) )
+		formatString: #,0 \€
+		displayFolder: 02 Temps
+		lineageTag: b3007fc4-501f-4d7a-84ce-51aaa103cd7a
+
+	measure 'Écart CA vs N-1' = [CA HT] - [CA HT N-1]
+		formatString: #,0 \€
+		displayFolder: 02 Temps
+		lineageTag: bb8e2186-949d-4237-bbce-3948283cdb76
+
+	measure 'Écart % CA vs N-1' = DIVIDE( [Écart CA vs N-1], [CA HT N-1] )
+		formatString: 0.0 %
+		displayFolder: 02 Temps
+		lineageTag: edae2b92-b671-4946-8542-9bd47791da64
+
+	measure 'CA HT YTD' = CALCULATE( [CA HT], DATESYTD( 'Dim_Date'[Date] ) )
+		formatString: #,0 \€
+		displayFolder: 02 Temps
+		lineageTag: 7fda6033-800b-4423-8b19-41e26977e421
+
+	measure 'CA HT YTD N-1' = CALCULATE( [CA HT], DATESYTD( SAMEPERIODLASTYEAR( 'Dim_Date'[Date] ) ) )
+		formatString: #,0 \€
+		displayFolder: 02 Temps
+		lineageTag: 17f1f36b-3553-4944-9150-a48b9ce90ce8
+
+	measure 'Écart % YTD vs N-1' = DIVIDE( [CA HT YTD] - [CA HT YTD N-1], [CA HT YTD N-1] )
+		formatString: 0.0 %
+		displayFolder: 02 Temps
+		lineageTag: 1d13e705-56bb-49d0-bf78-eaee436279cb
+
+	measure 'CA HT M-1' = CALCULATE( [CA HT], DATEADD( 'Dim_Date'[Date], -1, MONTH ) )
+		formatString: #,0 \€
+		displayFolder: 02 Temps
+		lineageTag: 56e388ca-7e3c-45fd-af0a-17ffc9499a59
+
+	measure 'CA HT 12 mois glissants' = CALCULATE( [CA HT], DATESINPERIOD( 'Dim_Date'[Date], MAX( 'Dim_Date'[Date] ), -12, MONTH ) )
+		formatString: #,0 \€
+		displayFolder: 02 Temps
+		lineageTag: f7074391-a754-4dcf-8c01-05cfa689bd12
+
+	measure 'Marge HT YTD' = CALCULATE( [Marge HT], DATESYTD( 'Dim_Date'[Date] ) )
+		formatString: #,0 \€
+		displayFolder: 02 Temps
+		lineageTag: 778b24aa-2e0b-44d9-bf4b-896d55044541
+
+	measure Objectif = SUM( Fait_Objectifs[Objectif] )
+		formatString: #,0 \€
+		displayFolder: 03 Objectifs
+		lineageTag: 60900740-aee0-42eb-a387-a877a24c1649
+
+	measure 'Objectif YTD' = CALCULATE( [Objectif], DATESYTD( 'Dim_Date'[Date] ) )
+		formatString: #,0 \€
+		displayFolder: 03 Objectifs
+		lineageTag: 4394b4ef-817a-4a16-8d22-86375de5a0dd
+
+	measure 'Écart vs objectif' = [CA HT] - [Objectif]
+		formatString: #,0 \€
+		displayFolder: 03 Objectifs
+		lineageTag: 318ab28d-141d-4655-acb1-efd1d2b4095e
+
+	measure 'Taux atteinte %' = DIVIDE( [CA HT], [Objectif] )
+		formatString: 0.0 %
+		displayFolder: 03 Objectifs
+		lineageTag: d216bc76-0472-42c6-91a8-632f1fcc66ac
+
+	measure 'Taux atteinte YTD %' = DIVIDE( [CA HT YTD], [Objectif YTD] )
+		formatString: 0.0 %
+		displayFolder: 03 Objectifs
+		lineageTag: 44b7369b-f197-4055-9ee7-462b70f247e4
+
+	measure 'Statut objectif' =
+			SWITCH(
+				TRUE(),
+				ISBLANK( [Objectif] ), "Sans objectif",
+				[Taux atteinte %] >= 1, "Atteint",
+				[Taux atteinte %] >= 0.9, "Proche",
+				"Non atteint"
+			)
+		displayFolder: 03 Objectifs
+		lineageTag: aefb2f09-68a4-4d90-b384-7b3e56414e3f
+
+	measure 'Stock unités' = CALCULATE( SUM( Fait_Stocks[Stock_Unites] ), LASTNONBLANK( 'Dim_Date'[Date], CALCULATE( COUNTROWS( Fait_Stocks ) ) ) )
+		formatString: #,0
+		displayFolder: 04 Stocks
+		lineageTag: b275545e-df6a-41f2-bcbc-a28ee5225fe8
+
+	measure 'Valeur stock HT' = CALCULATE( SUM( Fait_Stocks[Valeur_Stock_HT] ), LASTNONBLANK( 'Dim_Date'[Date], CALCULATE( COUNTROWS( Fait_Stocks ) ) ) )
+		formatString: #,0 \€
+		displayFolder: 04 Stocks
+		lineageTag: b0ccb470-bf2f-418a-963b-72acd82ddad3
+
+	measure 'Date du stock' = MAX( Fait_Stocks[Date_Stock] )
+		formatString: dd/mm/yyyy
+		displayFolder: 04 Stocks
+		lineageTag: b32dfd1e-88f8-4224-819d-9b5eb9002746
+
+	measure 'Nb jours écoulés' = CALCULATE( COUNTROWS( 'Dim_Date' ), 'Dim_Date'[EstPassé] = TRUE() )
+		formatString: #,0
+		displayFolder: 04 Stocks
+		lineageTag: 3fa392e6-70ec-4911-a715-99f0e71ebba0
+
+	measure 'Ventes moyennes par jour' = DIVIDE( [Quantité vendue], [Nb jours écoulés] )
+		formatString: #,0.0
+		displayFolder: 04 Stocks
+		lineageTag: 4e626944-efc8-4ab4-8712-508817c6db4f
+
+	measure 'Couverture stock (jours)' = DIVIDE( [Stock unités], [Ventes moyennes par jour] )
+		formatString: #,0
+		displayFolder: 04 Stocks
+		lineageTag: 23e8d4d9-432e-4337-8daa-9935afc4cec1
+
+	column Colonne1
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 33784d36-dea8-4ad3-a39e-9fa26a4eb7ef
+		summarizeBy: none
+		sourceColumn: [Colonne1]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition _Mesures = calculated
+		mode: import
+		source = ROW( "Colonne1", 0 )
+
