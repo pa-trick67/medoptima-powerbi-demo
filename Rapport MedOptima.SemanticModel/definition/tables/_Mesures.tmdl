@@ -71,7 +71,13 @@ table _Mesures
 		displayFolder: 01 Ventes
 		lineageTag: 75db41a1-b50d-4bf7-9aa5-a71d77fe0ec4
 
-	measure 'CA HT N-1' = CALCULATE( [CA HT], SAMEPERIODLASTYEAR( 'Dim_Date'[Date] ) )
+	/// CA HT de l'année précédente, limité aux mois où le CA de la période courante est > 0 (comparaison à période égale).
+	measure 'CA HT N-1' =
+			
+			VAR _MoisActifs = FILTER( VALUES( 'Dim_Date'[AnnéeMoisNum] ), [CA HT] > 0 )   -- mois de N avec du CA
+			VAR _Dates = CALCULATETABLE( VALUES( 'Dim_Date'[Date] ), _MoisActifs )
+			RETURN
+			    CALCULATE( [CA HT], SAMEPERIODLASTYEAR( _Dates ) )
 		formatString: #,0 \€
 		displayFolder: 02 Temps
 		lineageTag: b3007fc4-501f-4d7a-84ce-51aaa103cd7a
@@ -91,7 +97,8 @@ table _Mesures
 		displayFolder: 02 Temps
 		lineageTag: 7fda6033-800b-4423-8b19-41e26977e421
 
-	measure 'CA HT YTD N-1' = CALCULATE( [CA HT], DATESYTD( SAMEPERIODLASTYEAR( 'Dim_Date'[Date] ) ) )
+	/// Cumul annuel N-1, limité aux mois où le CA de N est > 0 (s'appuie sur [CA HT N-1]).
+	measure 'CA HT YTD N-1' = CALCULATE( [CA HT N-1], DATESYTD( 'Dim_Date'[Date] ) )
 		formatString: #,0 \€
 		displayFolder: 02 Temps
 		lineageTag: 17f1f36b-3553-4944-9150-a48b9ce90ce8
@@ -116,7 +123,15 @@ table _Mesures
 		displayFolder: 02 Temps
 		lineageTag: 778b24aa-2e0b-44d9-bf4b-896d55044541
 
-	measure Objectif = SUM( Fait_Objectifs[Objectif] )
+	/// Objectif de CA, limité aux mois où des ventes existent (jusqu'au mois de la dernière vente) pour comparer à période égale.
+	measure Objectif =
+			
+			VAR _DerniereVente = CALCULATE( MAX( Fait_Ventes[Date] ), REMOVEFILTERS() )   -- dernière date de vente du modèle
+			RETURN
+			    CALCULATE(
+			        SUM( Fait_Objectifs[Objectif] ),
+			        KEEPFILTERS( 'Dim_Date'[Date] <= EOMONTH( _DerniereVente, 0 ) )
+			    )
 		formatString: #,0 \€
 		displayFolder: 03 Objectifs
 		lineageTag: 60900740-aee0-42eb-a387-a877a24c1649
@@ -181,6 +196,40 @@ table _Mesures
 		formatString: #,0
 		displayFolder: 04 Stocks
 		lineageTag: 23e8d4d9-432e-4337-8daa-9935afc4cec1
+
+	/// Carte KPI du CA HT (fonction fx_kpi_card).
+	measure 'KPI CA' = fx_kpi_card( "Chiffre d’affaires HT", [CA HT], "€" )
+		displayFolder: 05 Visuels
+		lineageTag: 0c2a9af5-331a-4ef6-9bfe-f481138d5061
+		dataCategory: ImageUrl
+
+	measure dummy_mes = 1
+		formatString: 0
+		lineageTag: dd346aac-d88f-4deb-8470-29c62b4c5a3c
+
+	/// Carte KPI de la quantité vendue (fonction fx_kpi_card).
+	measure 'KPI Quantité' = fx_kpi_card( "Quantité vendue", [Quantité vendue], "" )
+		displayFolder: 05 Visuels
+		lineageTag: 0c66ff2a-d550-4205-a159-ce68f720ae00
+		dataCategory: ImageUrl
+
+	/// Carte KPI de la marge HT (fonction fx_kpi_card).
+	measure 'KPI Marge' = fx_kpi_card( "Marge HT", [Marge HT], "€" )
+		displayFolder: 05 Visuels
+		lineageTag: abf044c4-1195-4157-b2a3-c17b13a2b546
+		dataCategory: ImageUrl
+
+	/// Carte KPI du taux de marge (fonction fx_kpi_card_pct).
+	measure 'KPI Taux de marge' = fx_kpi_card_pct( "Taux de marge", [Taux de marge %], FALSE() )
+		displayFolder: 05 Visuels
+		lineageTag: 117067c9-552e-4c7b-b854-f4f5d168bbe4
+		dataCategory: ImageUrl
+
+	/// Carte KPI du taux d'atteinte de l'objectif (fonction fx_kpi_card_pct).
+	measure 'KPI Taux d''atteinte' = fx_kpi_card_pct( "Taux d’atteinte objectif", [Taux atteinte %], FALSE() )
+		displayFolder: 05 Visuels
+		lineageTag: fdc969cb-f080-4532-934e-9185630a1590
+		dataCategory: ImageUrl
 
 	column Colonne1
 		dataType: int64

@@ -4,10 +4,10 @@
   "position": {
     "x": 1180,
     "y": 214,
-    "z": 21,
+    "z": 5000,
     "height": 384,
     "width": 716,
-    "tabOrder": 210
+    "tabOrder": 5000
   },
   "visual": {
     "visualType": "barChart",
@@ -79,7 +79,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#276BBF'"
+                      "Value": "'#1F4E9E'"
                     }
                   }
                 }
@@ -112,7 +112,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#1A1D24'"
+                      "Value": "'#1A2B4A'"
                     }
                   }
                 }

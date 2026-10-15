@@ -11,13 +11,13 @@
       "type": "SharedResources"
     },
     "customTheme": {
-      "name": "MedOptima_Clair",
-      "type": "RegisteredResources",
+      "name": "MedOptima_Marque5030786753299333.json",
       "reportVersionAtImport": {
         "visual": "2.13.0",
         "report": "3.4.0",
         "page": "2.3.1"
-      }
+      },
+      "type": "RegisteredResources"
     }
   },
   "objects": {
@@ -28,6 +28,19 @@
             "expr": {
               "Literal": {
                 "Value": "'Top'"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "outspacePane": [
+      {
+        "properties": {
+          "expanded": {
+            "expr": {
+              "Literal": {
+                "Value": "true"
               }
             }
           }
@@ -52,8 +65,8 @@
       "type": "RegisteredResources",
       "items": [
         {
-          "name": "MedOptima_Clair",
-          "path": "MedOptima_Clair",
+          "name": "MedOptima_Marque5030786753299333.json",
+          "path": "MedOptima_Marque5030786753299333.json",
           "type": "CustomTheme"
         }
       ]

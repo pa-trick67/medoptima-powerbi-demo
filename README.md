@@ -2,7 +2,7 @@
 
 Projet de démonstration de la conférence **« De l'Excel au Power BI : transformer ses données en un véritable outil de pilotage »**.
 
-MedOptima Distribution est un distributeur de parapharmacie **fictif** (4 régions, 12 commerciaux, 120 pharmacies, 23 produits). Toutes les données, adresses e-mail et codes postaux sont fictifs.
+MedOptima Distribution est un distributeur de parapharmacie **fictif** (4 régions, 12 commerciaux, 120 pharmacies, 23 produits). Toutes les données et adresses e-mail sont fictives.
 
 ## Contenu
 
@@ -10,62 +10,52 @@ MedOptima Distribution est un distributeur de parapharmacie **fictif** (4 régio
 - `Rapport MedOptima.SemanticModel/` – modèle sémantique au format TMDL
 - `Rapport MedOptima.Report/` – définition du rapport (PBIR)
 
-Le classeur source `MedOptima_Distribution_Donnees.xlsx` **n'est pas inclus** dans le dépôt.
-
 ## Ouvrir le projet
 
-1. Cloner le dépôt, puis ouvrir `Rapport MedOptima.pbip` dans Power BI Desktop.
-2. Dans **Accueil > Transformer les données > Gérer les paramètres**, renseigner `CheminFichier`
-   avec le chemin complet du classeur `MedOptima_Distribution_Donnees.xlsx` sur votre poste.
-3. Actualiser. `Dim_Date`, `_Mesures` et `Dim_Pharmacie[Ville_Geo]` sont calculées : elles ne
-   se remplissent qu'après cette actualisation.
+1. Cloner le repo puis ouvrir `Rapport MedOptima.pbip` dans Power BI Desktop.
+2. Dans **Transformer les données > Gérer les paramètres**, renseigner `CheminFichier` avec le chemin local du classeur `MedOptima_Distribution_Donnees.xlsx` (non inclus dans le repo).
+3. Actualiser.
 
-## Le modèle
+## Modèle sémantique
 
-Modèle en étoile, 9 tables.
+Modèle en étoile : 3 tables de faits, 5 dimensions et une table de mesures.
 
 | Table | Rôle |
 |---|---|
-| `Fait_Ventes` | lignes de commande (date, pharmacie, produit, commercial, CA, coût) |
-| `Fait_Objectifs` | objectifs mensuels par commercial, au grain `yyyyMM` |
-| `Fait_Stocks` | photo de stock par produit et région |
-| `Dim_Produit`, `Dim_Pharmacie`, `Dim_Commercial`, `Dim_Region` | dimensions |
-| `Dim_Date` | calendrier DAX, plage déduite des données, marquée comme table de dates |
-| `_Mesures` | 35 mesures DAX, rangées en 4 dossiers |
+| `Fait_Ventes` | Lignes de commande (quantité, remise, CA HT, coût HT) |
+| `Fait_Objectifs` | Objectifs mensuels de CA par commercial (2025-2026) |
+| `Fait_Stocks` | Stock de fin de mois par produit et région |
+| `Dim_Produit`, `Dim_Pharmacie`, `Dim_Commercial`, `Dim_Region` | Dimensions métier |
+| `Dim_Date` | Table de dates calculée en DAX, bornée sur les dates des ventes et des stocks |
+| `_Mesures` | Table dédiée aux mesures |
 
-Deux points méritent un mot, parce qu'ils ne se devinent pas à la lecture du modèle :
+Relations :
 
-- **`Fait_Objectifs` est relié à `Dim_Date[AnnéeMoisNum]` en plusieurs-à-plusieurs**, en sens
-  unique. Aucune des deux colonnes n'est unique, une relation un-à-plusieurs est donc
-  impossible. Le sens unique évite un chemin de filtre parasite
-  `Dim_Commercial → Fait_Objectifs → Dim_Date → Fait_Ventes`.
-  Conséquence : filtrer une partie de mois renvoie l'objectif du **mois entier**.
-- **Les mesures de stock sont semi-additives.** `Stock unités` et `Valeur stock HT` utilisent
-  `LASTNONBLANK` pour prendre la dernière photo de la période, pas la somme des photos.
+- `Dim_Date` filtre `Fait_Ventes[Date]`, `Fait_Stocks[Date_Stock]` et `Fait_Objectifs[Période]` (grain mois, via `Dim_Date[AnnéeMoisNum]`)
+- `Dim_Commercial` filtre `Fait_Ventes` et `Fait_Objectifs` ; `Dim_Region` filtre `Dim_Commercial` et `Fait_Stocks`
+- `Dim_Produit` filtre `Fait_Ventes` et `Fait_Stocks` ; `Dim_Pharmacie` filtre `Fait_Ventes`
 
-### Géocodage
+## Mesures (35)
 
-Les codes postaux du classeur sont fictifs : seul le préfixe départemental est exploitable.
-La colonne calculée `Dim_Pharmacie[Ville_Geo]` reconstruit une adresse non ambiguë
-(`Ville, Département, France`) et porte la catégorie `Address`. Sans elle, Bing plaçait
-Saint-Denis (93) à La Réunion.
-
-## Le rapport
-
-Trois pages, thème clair personnalisé `MedOptima_Clair`.
-
-| Page | Contenu |
+| Dossier | Mesures |
 |---|---|
-| Pilotage commercial | KPI, CA réalisé vs objectif par mois, classement des commerciaux, détail par commercial |
-| Produits & stocks | CA et marge par catégorie et produit, volume × marge, couverture de stock |
-| Performance commerciale | suivi individuel, CA vs N-1, taux d'atteinte, territoire couvert |
+| **01 Ventes** | CA HT, CA brut HT, Remise accordée, Taux de remise %, Coût HT, Marge HT, Taux de marge %, Quantité vendue, Nb commandes, Nb lignes de vente, Panier moyen, Prix de vente moyen, Nb pharmacies actives, Nb produits vendus |
+| **02 Temps** | CA HT N-1, Écart CA vs N-1, Écart % CA vs N-1, CA HT YTD, CA HT YTD N-1, Écart % YTD vs N-1, CA HT M-1, CA HT 12 mois glissants, Marge HT YTD |
+| **03 Objectifs** | Objectif, Objectif YTD, Écart vs objectif, Taux atteinte %, Taux atteinte YTD %, Statut objectif |
+| **04 Stocks** | Stock unités, Valeur stock HT, Date du stock, Nb jours écoulés, Ventes moyennes par jour, Couverture stock (jours) |
 
-La palette est validée pour fond clair : bande de clarté, plancher de chroma, séparation en
-vision deutan/protan et contraste WCAG. Les couleurs de statut sont toujours accompagnées du
-libellé `Statut objectif`, jamais seules.
+## Rapport
+
+3 pages :
+
+1. **Pilotage commercial**
+2. **Produits & stocks**
+3. **Performance commerciale**
 
 ## Points démontrés
 
 - Transformation Power Query d'un tableau Excel « mis en forme pour un humain » (objectifs)
-- Modèle en étoile, table de dates, time intelligence
-- Intégration Git avec le format PBIP / TMDL : un `git diff` lisible sur une mesure DAX
+- Fonction Power Query réutilisable (`fx_loadData`) et paramètre de chemin (`CheminFichier`)
+- Modèle en étoile avec table de dates et table de mesures organisée en dossiers
+- Time intelligence (N-1, YTD, 12 mois glissants) et suivi des objectifs
+- Intégration Git avec le format PBIP / TMDL

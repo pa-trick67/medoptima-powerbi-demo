@@ -4,7 +4,7 @@
   "position": {
     "x": 1180,
     "y": 214,
-    "z": 21,
+    "z": 10000,
     "height": 384,
     "width": 716,
     "tabOrder": 210
@@ -92,7 +92,7 @@
             "zoom": {
               "expr": {
                 "Literal": {
-                  "Value": "3.8D"
+                  "Value": "3.83D"
                 }
               }
             },
@@ -192,7 +192,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#1A1D24'"
+                      "Value": "'#1A2B4A'"
                     }
                   }
                 }
@@ -216,37 +216,5 @@
         }
       ]
     }
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "915542f36476618d836a",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "Dim_Pharmacie"
-              }
-            },
-            "Property": "Ville_Geo"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "3fc580b05f4d2fe1b5a8",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "_Mesures"
-              }
-            },
-            "Property": "CA HT"
-          }
-        },
-        "type": "Advanced"
-      }
-    ]
   }
 }

@@ -4,7 +4,7 @@
   "position": {
     "x": 1360,
     "y": 12,
-    "z": 2,
+    "z": 1000,
     "height": 58,
     "width": 260,
     "tabOrder": 20
@@ -119,7 +119,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#1A1D24'"
+                      "Value": "'#1A2B4A'"
                     }
                   }
                 }
@@ -143,23 +143,5 @@
         }
       ]
     }
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "f49f7829ab25914258aa",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "Dim_Date"
-              }
-            },
-            "Property": "Année"
-          }
-        },
-        "type": "Advanced"
-      }
-    ]
   }
 }

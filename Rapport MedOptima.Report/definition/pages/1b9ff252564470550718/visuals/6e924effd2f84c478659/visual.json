@@ -4,10 +4,10 @@
   "position": {
     "x": 24,
     "y": 214,
-    "z": 20,
+    "z": 4000,
     "height": 384,
     "width": 1140,
-    "tabOrder": 200
+    "tabOrder": 4000
   },
   "visual": {
     "visualType": "clusteredColumnChart",
@@ -34,6 +34,20 @@
         },
         "Y": {
           "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Mesures"
+                    }
+                  },
+                  "Property": "CA HT N-1"
+                }
+              },
+              "queryRef": "_Mesures.CA HT N-1",
+              "nativeQueryRef": "CA HT N-1"
+            },
             {
               "field": {
                 "Measure": {
@@ -69,15 +83,60 @@
     "objects": {
       "dataPoint": [
         {
-          "properties": {},
+          "properties": {
+            "fill": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 2,
+                      "Percent": 0
+                    }
+                  }
+                }
+              }
+            }
+          },
           "selector": {
             "metadata": "_Mesures.CA HT"
           }
         },
         {
-          "properties": {},
+          "properties": {
+            "fill": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 3,
+                      "Percent": 0
+                    }
+                  }
+                }
+              }
+            }
+          },
           "selector": {
             "metadata": "_Mesures.Objectif"
+          }
+        },
+        {
+          "properties": {
+            "fill": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 0,
+                      "Percent": -0.2
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Mesures.CA HT N-1"
           }
         }
       ],
@@ -103,7 +162,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#4A5262'"
+                      "Value": "'#4A5873'"
                     }
                   }
                 }
@@ -143,7 +202,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#1A1D24'"
+                      "Value": "'#1A2B4A'"
                     }
                   }
                 }
@@ -167,5 +226,65 @@
         }
       ]
     }
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "5ac3ad824895fd80fe89",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Mesures"
+              }
+            },
+            "Property": "CA HT"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "3bca265acf9b49bb1829",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Dim_Date"
+              }
+            },
+            "Property": "Mois"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "d38ccec1f12053d4fdd9",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Mesures"
+              }
+            },
+            "Property": "Objectif"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "04bd70e927e72e90a388",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Mesures"
+              }
+            },
+            "Property": "CA HT N-1"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
   }
 }

@@ -98,6 +98,32 @@
             "width": 234
           },
           "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 991.76120447958283,
+            "y": 291.66910952859627
+          },
+          "nodeIndex": "_Mesures",
+          "nodeLineageTag": "b25f1155-5998-4bee-8148-1ee2de1655f4",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1275.7612044795828,
+            "y": 291.66910952859627
+          },
+          "nodeIndex": "Dim_Date",
+          "nodeLineageTag": "0e2fa1a9-114a-4483-939a-15e215cd8389",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
         }
       ],
       "name": "Toutes les tables",

@@ -11,7 +11,7 @@ table Fait_Ventes
 
 	column Date
 		dataType: dateTime
-		formatString: Long Date
+		formatString: Short Date
 		lineageTag: 2cc2f559-50b6-4a60-8809-c093e07bd3bb
 		summarizeBy: none
 		sourceColumn: Date

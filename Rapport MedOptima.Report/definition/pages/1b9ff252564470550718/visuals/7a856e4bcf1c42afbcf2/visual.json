@@ -1,13 +1,13 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.4.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "7a856e4bcf1c42afbcf2",
   "position": {
     "x": 24,
     "y": 14,
-    "z": 1,
-    "width": 900,
+    "z": 0,
     "height": 50,
-    "tabOrder": 10
+    "width": 900,
+    "tabOrder": 0
   },
   "visual": {
     "visualType": "textbox",
@@ -23,7 +23,7 @@
                     "textStyle": {
                       "fontSize": "20pt",
                       "fontWeight": "600",
-                      "color": "#1A1D24",
+                      "color": "#1A2B4A",
                       "fontFamily": "Segoe UI"
                     }
                   },
@@ -31,7 +31,7 @@
                     "value": "réalisé vs objectif",
                     "textStyle": {
                       "fontSize": "11pt",
-                      "color": "#4A5262",
+                      "color": "#4A5873",
                       "fontFamily": "Segoe UI"
                     }
                   }

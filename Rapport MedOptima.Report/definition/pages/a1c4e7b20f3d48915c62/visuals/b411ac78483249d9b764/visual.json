@@ -4,7 +4,7 @@
   "position": {
     "x": 653,
     "y": 214,
-    "z": 21,
+    "z": 9000,
     "height": 384,
     "width": 613,
     "tabOrder": 210
@@ -79,7 +79,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#AE5420'"
+                      "Value": "'#E8821E'"
                     }
                   }
                 }
@@ -112,7 +112,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#1A1D24'"
+                      "Value": "'#1A2B4A'"
                     }
                   }
                 }
