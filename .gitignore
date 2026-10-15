@@ -1,2 +1,4 @@
 **/.pbi/localSettings.json
 **/.pbi/cache.abf
+# Sorties de travail Claude (non versionnées)
+Claude outputs/
