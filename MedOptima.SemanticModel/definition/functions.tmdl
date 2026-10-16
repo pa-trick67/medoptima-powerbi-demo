@@ -1,0 +1,263 @@
+/// Formate un nombre avec un point décimal pour les coordonnées SVG (indépendant de la langue du modèle).
+function fx_num_format =
+		( x : NUMERIC ) =>
+		    FORMAT( x, "0.0", "en-US" )
+	lineageTag: 6e338fcc-8362-4f3a-b760-5b2d4783f89c
+
+/// Carte KPI en SVG : valeur, variation vs N-1 (N-1 limité aux mois où le CA de N est > 0) et courbe lissée d'évolution mensuelle avec fond dégradé et ligne pointillée au niveau de la moyenne mensuelle (sans libellés), aux couleurs MedOptima. La courbe ignore les filtres de mois (elle garde tous les mois des années sélectionnées) et met en évidence en orange les mois sélectionnés ; la valeur et la variation suivent la sélection. Paramètres : titre (texte affiché), mesure (ex. [CA HT], évaluée dans chaque contexte), unite (ex. "€" ou ""). Renvoie une URL d'image : la mesure appelante doit avoir la catégorie URL d'image.
+function fx_kpi_card =
+		(
+		        titre : STRING,
+		        mesure : SCALAR NUMERIC EXPR,
+		        unite : STRING
+		    ) =>
+		    VAR _Val = mesure
+		    -- N-1 limité aux mois où le CA de N est > 0 (comparaison à période égale)
+		    VAR _MoisActifs = FILTER( VALUES( 'Dim_Date'[AnnéeMoisNum] ), [CA HT] > 0 )
+		    VAR _DatesN = CALCULATETABLE( VALUES( 'Dim_Date'[Date] ), _MoisActifs )
+		    VAR _ValN1 = CALCULATE( mesure, SAMEPERIODLASTYEAR( _DatesN ) )
+		    VAR _Var = DIVIDE( _Val - _ValN1, _ValN1 )
+		    VAR _HasVar = NOT ISBLANK( _Var )
+		    VAR _Up = _Var >= 0
+		    -- Textes
+		    VAR _ValTxt =
+		        SWITCH( TRUE(),
+		            ISBLANK( _Val ), "–",
+		            ABS( _Val ) >= 1000000, FORMAT( _Val / 1000000, "0.0" ) & " M" & unite,
+		            ABS( _Val ) >= 1000, FORMAT( _Val / 1000, "0" ) & " k" & unite,
+		            FORMAT( _Val, "0" ) & IF( unite <> "", " " & unite ) )
+		    VAR _VarTxt =
+		        IF( NOT _HasVar, "n.d. vs N-1",
+		            IF( _Up, "▲ ", "▼ " ) & FORMAT( _Var, "+0.0 %;-0.0 %" ) & " vs N-1" )
+		    -- Couleurs (thème MedOptima)
+		    VAR _ColVar = IF( NOT _HasVar, "#6B7A94", IF( _Up, "#1E8E5A", "#C8371E" ) )
+		    VAR _BgVar  = IF( NOT _HasVar, "#EEF1F6", IF( _Up, "#E6F4EC", "#FBE9E6" ) )
+		    VAR _PillW  = LEN( _VarTxt ) * 7 + 18
+		    -- La courbe démarre juste après le bloc KPI (largeur estimée du texte)
+		    VAR _TxtEnd = MAX( 16 + LEN( _ValTxt ) * 19, 16 + _PillW )
+		    VAR _X0 = MIN( _TxtEnd + 16, 220 )
+		    VAR _X1 = 344
+		    VAR _W  = _X1 - _X0
+		    VAR _Y0 = 28
+		    VAR _H  = 62
+		    VAR _Bas = _Y0 + _H
+		    -- Mois sélectionnés (contexte courant, segment mois compris)
+		    VAR _Sel = VALUES( 'Dim_Date'[AnnéeMoisNum] )
+		    -- Courbe : tous les mois des années sélectionnées (filtres de mois ignorés), un point par mois ayant une valeur
+		    VAR _Mois =
+		        CALCULATETABLE(
+		            FILTER(
+		                ADDCOLUMNS( VALUES( 'Dim_Date'[AnnéeMoisNum] ), "@v", mesure ),
+		                NOT ISBLANK( [@v] ) ),
+		            REMOVEFILTERS(
+		                'Dim_Date'[Mois], 'Dim_Date'[MoisCourt], 'Dim_Date'[NumMois],
+		                'Dim_Date'[AnnéeMois], 'Dim_Date'[AnnéeMoisNum], 'Dim_Date'[FinDeMois] ) )
+		    VAR _N   = COUNTROWS( _Mois )
+		    VAR _Min = MINX( _Mois, [@v] )
+		    VAR _Max = MAXX( _Mois, [@v] )
+		    VAR _Idx =
+		        ADDCOLUMNS( _Mois, "@i",
+		            VAR _m = 'Dim_Date'[AnnéeMoisNum]
+		            RETURN COUNTROWS( FILTER( _Mois, 'Dim_Date'[AnnéeMoisNum] <= _m ) ) )
+		    VAR _Pts =
+		        ADDCOLUMNS( _Idx,
+		            "@x", _X0 + IF( _N = 1, _W / 2, DIVIDE( ( [@i] - 1 ) * _W, _N - 1 ) ),
+		            "@y", _Y0 + _H - DIVIDE( [@v] - _Min, _Max - _Min, 0.5 ) * _H )
+		    VAR _FirstX = MINX( _Pts, [@x] )
+		    VAR _FirstY = MAXX( FILTER( _Pts, [@i] = 1 ), [@y] )
+		    VAR _LastX  = MAXX( _Pts, [@x] )
+		    -- Points mis en évidence : mois sélectionnés si un filtre de mois réduit la période, sinon le dernier mois
+		    VAR _NbSel = COUNTROWS( FILTER( _Pts, 'Dim_Date'[AnnéeMoisNum] IN _Sel ) )
+		    VAR _FiltreMois = _NbSel < _N
+		    VAR _PtsOrange =
+		        FILTER( _Pts, IF( _FiltreMois, 'Dim_Date'[AnnéeMoisNum] IN _Sel, [@i] = _N ) )
+		    VAR _Cercles =
+		        CONCATENATEX( _PtsOrange,
+		            "<circle cx='" & fx_num_format( [@x] ) & "' cy='" & fx_num_format( [@y] ) & "' r='4' fill='#E8821E' stroke='#FFFFFF' stroke-width='1.5'/>",
+		            "", [@i], ASC )
+		    -- Ligne de référence : moyenne mensuelle de la courbe
+		    VAR _Moy  = AVERAGEX( _Mois, [@v] )
+		    VAR _RefY = MIN( MAX( _Y0 + _H - DIVIDE( _Moy - _Min, _Max - _Min, 0.5 ) * _H, _Y0 ), _Bas )
+		    -- Courbe lissée (Catmull-Rom convertie en courbes de Bézier cubiques)
+		    VAR _Segs =
+		        ADDCOLUMNS(
+		            FILTER( _Pts, [@i] >= 2 ),
+		            "@c",
+		                VAR i  = [@i]
+		                VAR x2 = [@x]
+		                VAR y2 = [@y]
+		                VAR x1 = MAXX( FILTER( _Pts, [@i] = i - 1 ), [@x] )
+		                VAR y1 = MAXX( FILTER( _Pts, [@i] = i - 1 ), [@y] )
+		                VAR x0 = MAXX( FILTER( _Pts, [@i] = MAX( i - 2, 1 ) ), [@x] )
+		                VAR y0 = MAXX( FILTER( _Pts, [@i] = MAX( i - 2, 1 ) ), [@y] )
+		                VAR x3 = MAXX( FILTER( _Pts, [@i] = MIN( i + 1, _N ) ), [@x] )
+		                VAR y3 = MAXX( FILTER( _Pts, [@i] = MIN( i + 1, _N ) ), [@y] )
+		                VAR c1y = MIN( MAX( y1 + ( y2 - y0 ) / 6, _Y0 ), _Bas )
+		                VAR c2y = MIN( MAX( y2 - ( y3 - y1 ) / 6, _Y0 ), _Bas )
+		                RETURN
+		                    "C" & fx_num_format( x1 + ( x2 - x0 ) / 6 ) & "," & fx_num_format( c1y )
+		                    & " " & fx_num_format( x2 - ( x3 - x1 ) / 6 ) & "," & fx_num_format( c2y )
+		                    & " " & fx_num_format( x2 ) & "," & fx_num_format( y2 ) )
+		    VAR _Path =
+		        "M" & fx_num_format( _FirstX ) & "," & fx_num_format( _FirstY ) & " "
+		        & CONCATENATEX( _Segs, [@c], " ", [@i], ASC )
+		    VAR _Aire =
+		        _Path & " L" & fx_num_format( _LastX ) & "," & fx_num_format( _Bas )
+		        & " L" & fx_num_format( _FirstX ) & "," & fx_num_format( _Bas ) & " Z"
+		    -- Fond dégradé vertical sous la courbe (opaque en haut, quasi transparent en bas)
+		    VAR _Degrade =
+		        "<defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'>"
+		        & "<stop offset='0' stop-color='#1F4E9E' stop-opacity='0.28'/>"
+		        & "<stop offset='1' stop-color='#1F4E9E' stop-opacity='0.03'/>"
+		        & "</linearGradient></defs>"
+		    VAR _Spark =
+		        IF( _N > 0,
+		            _Degrade
+		            & "<path d='" & _Aire & "' fill='url(#g)'/>"
+		            & "<line x1='" & fx_num_format( _X0 ) & "' y1='" & fx_num_format( _RefY ) & "' x2='" & fx_num_format( _X1 ) & "' y2='" & fx_num_format( _RefY ) & "' stroke='#6B7A94' stroke-width='1' stroke-dasharray='3 3'/>"
+		            & "<path d='" & _Path & "' fill='none' stroke='#1F4E9E' stroke-width='2.5' stroke-linejoin='round' stroke-linecap='round'/>"
+		            & _Cercles )
+		    -- Assemblage
+		    VAR _Svg =
+		        "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 120' width='360' height='120'>"
+		        & "<text x='16' y='28' font-family='Segoe UI' font-size='13' fill='#4A5873'>" & titre & "</text>"
+		        & "<text x='16' y='68' font-family='Segoe UI Semibold, Segoe UI' font-weight='600' font-size='32' fill='#1A2B4A'>" & _ValTxt & "</text>"
+		        & "<rect x='16' y='82' rx='11' ry='11' width='" & fx_num_format( _PillW ) & "' height='22' fill='" & _BgVar & "'/>"
+		        & "<text x='" & fx_num_format( 16 + _PillW / 2 ) & "' y='97' text-anchor='middle' font-family='Segoe UI Semibold, Segoe UI' font-weight='600' font-size='12' fill='" & _ColVar & "'>" & _VarTxt & "</text>"
+		        & _Spark
+		        & "</svg>"
+		    RETURN
+		        "data:image/svg+xml;utf8," & SUBSTITUTE( SUBSTITUTE( _Svg, "%", "%25" ), "#", "%23" )
+	lineageTag: 986259cb-696e-410d-874a-6ae8f46f0b17
+
+/// Carte KPI SVG pour une mesure en pourcentage (ex. taux de marge) : valeur en %, variation en points vs N-1 (N-1 limité aux mois où le CA de N est > 0), et en option une courbe lissée d'évolution mensuelle avec fond dégradé et ligne pointillée au niveau du taux de la période de la courbe. La courbe ignore les filtres de mois (elle garde tous les mois des années sélectionnées) et met en évidence en orange les mois sélectionnés ; la valeur et la variation suivent la sélection. Paramètres : titre (texte affiché), mesure (ratio, ex. [Taux de marge %]), afficher_courbe (TRUE par défaut ; FALSE pour masquer la courbe : la largeur de la carte s'ajuste alors au texte). Renvoie une URL d'image : la mesure appelante doit avoir la catégorie URL d'image.
+function fx_kpi_card_pct =
+		(
+		        titre : STRING,
+		        mesure : SCALAR NUMERIC EXPR,
+		        afficher_courbe : BOOLEAN = TRUE
+		    ) =>
+		    VAR _Val = mesure
+		    -- N-1 limité aux mois où le CA de N est > 0 (comparaison à période égale)
+		    VAR _MoisActifs = FILTER( VALUES( 'Dim_Date'[AnnéeMoisNum] ), [CA HT] > 0 )
+		    VAR _DatesN = CALCULATETABLE( VALUES( 'Dim_Date'[Date] ), _MoisActifs )
+		    VAR _ValN1 = CALCULATE( mesure, SAMEPERIODLASTYEAR( _DatesN ) )
+		    VAR _HasVar = NOT ISBLANK( _Val ) && NOT ISBLANK( _ValN1 )
+		    VAR _Var = _Val - _ValN1    -- écart en points (ratio)
+		    VAR _Up = _Var >= 0
+		    -- Textes
+		    VAR _ValTxt = IF( ISBLANK( _Val ), "–", FORMAT( _Val, "0.0 %" ) )
+		    VAR _VarTxt =
+		        IF( NOT _HasVar, "n.d. vs N-1",
+		            IF( _Up, "▲ ", "▼ " ) & FORMAT( _Var * 100, "+0.0;-0.0" ) & " pt vs N-1" )
+		    -- Couleurs (thème MedOptima)
+		    VAR _ColVar = IF( NOT _HasVar, "#6B7A94", IF( _Up, "#1E8E5A", "#C8371E" ) )
+		    VAR _BgVar  = IF( NOT _HasVar, "#EEF1F6", IF( _Up, "#E6F4EC", "#FBE9E6" ) )
+		    VAR _PillW  = LEN( _VarTxt ) * 7 + 18
+		    -- Largeur estimée du bloc texte (valeur, pastille, titre)
+		    VAR _TxtEnd = MAX( 16 + LEN( _ValTxt ) * 19, 16 + _PillW )
+		    VAR _TitreEnd = 16 + LEN( titre ) * 7.2
+		    -- Largeur totale : 360 avec courbe, sinon ajustée au texte + marge de 16
+		    VAR _SvgW = IF( afficher_courbe, 360, ROUNDUP( MAX( _TxtEnd, _TitreEnd ) + 16, 0 ) )
+		    -- La courbe démarre juste après le bloc KPI
+		    VAR _X0 = MIN( _TxtEnd + 16, 220 )
+		    VAR _X1 = 344
+		    VAR _W  = _X1 - _X0
+		    VAR _Y0 = 28
+		    VAR _H  = 62
+		    VAR _Bas = _Y0 + _H
+		    -- Mois sélectionnés (contexte courant, segment mois compris)
+		    VAR _Sel = VALUES( 'Dim_Date'[AnnéeMoisNum] )
+		    -- Courbe : tous les mois des années sélectionnées (filtres de mois ignorés), un point par mois ayant une valeur
+		    VAR _Mois =
+		        CALCULATETABLE(
+		            FILTER(
+		                ADDCOLUMNS( VALUES( 'Dim_Date'[AnnéeMoisNum] ), "@v", mesure ),
+		                NOT ISBLANK( [@v] ) ),
+		            REMOVEFILTERS(
+		                'Dim_Date'[Mois], 'Dim_Date'[MoisCourt], 'Dim_Date'[NumMois],
+		                'Dim_Date'[AnnéeMois], 'Dim_Date'[AnnéeMoisNum], 'Dim_Date'[FinDeMois] ) )
+		    -- Taux sur toute la période de la courbe (pour la ligne de référence)
+		    VAR _ValCourbe =
+		        CALCULATE( mesure,
+		            REMOVEFILTERS(
+		                'Dim_Date'[Mois], 'Dim_Date'[MoisCourt], 'Dim_Date'[NumMois],
+		                'Dim_Date'[AnnéeMois], 'Dim_Date'[AnnéeMoisNum], 'Dim_Date'[FinDeMois] ) )
+		    VAR _N   = COUNTROWS( _Mois )
+		    VAR _Min = MINX( _Mois, [@v] )
+		    VAR _Max = MAXX( _Mois, [@v] )
+		    VAR _Idx =
+		        ADDCOLUMNS( _Mois, "@i",
+		            VAR _m = 'Dim_Date'[AnnéeMoisNum]
+		            RETURN COUNTROWS( FILTER( _Mois, 'Dim_Date'[AnnéeMoisNum] <= _m ) ) )
+		    VAR _Pts =
+		        ADDCOLUMNS( _Idx,
+		            "@x", _X0 + IF( _N = 1, _W / 2, DIVIDE( ( [@i] - 1 ) * _W, _N - 1 ) ),
+		            "@y", _Y0 + _H - DIVIDE( [@v] - _Min, _Max - _Min, 0.5 ) * _H )
+		    VAR _FirstX = MINX( _Pts, [@x] )
+		    VAR _FirstY = MAXX( FILTER( _Pts, [@i] = 1 ), [@y] )
+		    VAR _LastX  = MAXX( _Pts, [@x] )
+		    -- Points mis en évidence : mois sélectionnés si un filtre de mois réduit la période, sinon le dernier mois
+		    VAR _NbSel = COUNTROWS( FILTER( _Pts, 'Dim_Date'[AnnéeMoisNum] IN _Sel ) )
+		    VAR _FiltreMois = _NbSel < _N
+		    VAR _PtsOrange =
+		        FILTER( _Pts, IF( _FiltreMois, 'Dim_Date'[AnnéeMoisNum] IN _Sel, [@i] = _N ) )
+		    VAR _Cercles =
+		        CONCATENATEX( _PtsOrange,
+		            "<circle cx='" & fx_num_format( [@x] ) & "' cy='" & fx_num_format( [@y] ) & "' r='4' fill='#E8821E' stroke='#FFFFFF' stroke-width='1.5'/>",
+		            "", [@i], ASC )
+		    -- Ligne de référence : taux de la période de la courbe
+		    VAR _RefY = MIN( MAX( _Y0 + _H - DIVIDE( _ValCourbe - _Min, _Max - _Min, 0.5 ) * _H, _Y0 ), _Bas )
+		    -- Courbe lissée (Catmull-Rom convertie en courbes de Bézier cubiques)
+		    VAR _Segs =
+		        ADDCOLUMNS(
+		            FILTER( _Pts, [@i] >= 2 ),
+		            "@c",
+		                VAR i  = [@i]
+		                VAR x2 = [@x]
+		                VAR y2 = [@y]
+		                VAR x1 = MAXX( FILTER( _Pts, [@i] = i - 1 ), [@x] )
+		                VAR y1 = MAXX( FILTER( _Pts, [@i] = i - 1 ), [@y] )
+		                VAR x0 = MAXX( FILTER( _Pts, [@i] = MAX( i - 2, 1 ) ), [@x] )
+		                VAR y0 = MAXX( FILTER( _Pts, [@i] = MAX( i - 2, 1 ) ), [@y] )
+		                VAR x3 = MAXX( FILTER( _Pts, [@i] = MIN( i + 1, _N ) ), [@x] )
+		                VAR y3 = MAXX( FILTER( _Pts, [@i] = MIN( i + 1, _N ) ), [@y] )
+		                VAR c1y = MIN( MAX( y1 + ( y2 - y0 ) / 6, _Y0 ), _Bas )
+		                VAR c2y = MIN( MAX( y2 - ( y3 - y1 ) / 6, _Y0 ), _Bas )
+		                RETURN
+		                    "C" & fx_num_format( x1 + ( x2 - x0 ) / 6 ) & "," & fx_num_format( c1y )
+		                    & " " & fx_num_format( x2 - ( x3 - x1 ) / 6 ) & "," & fx_num_format( c2y )
+		                    & " " & fx_num_format( x2 ) & "," & fx_num_format( y2 ) )
+		    VAR _Path =
+		        "M" & fx_num_format( _FirstX ) & "," & fx_num_format( _FirstY ) & " "
+		        & CONCATENATEX( _Segs, [@c], " ", [@i], ASC )
+		    VAR _Aire =
+		        _Path & " L" & fx_num_format( _LastX ) & "," & fx_num_format( _Bas )
+		        & " L" & fx_num_format( _FirstX ) & "," & fx_num_format( _Bas ) & " Z"
+		    -- Fond dégradé vertical sous la courbe (opaque en haut, quasi transparent en bas)
+		    VAR _Degrade =
+		        "<defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'>"
+		        & "<stop offset='0' stop-color='#1F4E9E' stop-opacity='0.28'/>"
+		        & "<stop offset='1' stop-color='#1F4E9E' stop-opacity='0.03'/>"
+		        & "</linearGradient></defs>"
+		    -- Courbe affichée seulement si afficher_courbe = TRUE
+		    VAR _Spark =
+		        IF( afficher_courbe && _N > 0,
+		            _Degrade
+		            & "<path d='" & _Aire & "' fill='url(#g)'/>"
+		            & "<line x1='" & fx_num_format( _X0 ) & "' y1='" & fx_num_format( _RefY ) & "' x2='" & fx_num_format( _X1 ) & "' y2='" & fx_num_format( _RefY ) & "' stroke='#6B7A94' stroke-width='1' stroke-dasharray='3 3'/>"
+		            & "<path d='" & _Path & "' fill='none' stroke='#1F4E9E' stroke-width='2.5' stroke-linejoin='round' stroke-linecap='round'/>"
+		            & _Cercles )
+		    -- Assemblage
+		    VAR _Svg =
+		        "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 " & _SvgW & " 120' width='" & _SvgW & "' height='120'>"
+		        & "<text x='16' y='28' font-family='Segoe UI' font-size='13' fill='#4A5873'>" & titre & "</text>"
+		        & "<text x='16' y='68' font-family='Segoe UI Semibold, Segoe UI' font-weight='600' font-size='32' fill='#1A2B4A'>" & _ValTxt & "</text>"
+		        & "<rect x='16' y='82' rx='11' ry='11' width='" & fx_num_format( _PillW ) & "' height='22' fill='" & _BgVar & "'/>"
+		        & "<text x='" & fx_num_format( 16 + _PillW / 2 ) & "' y='97' text-anchor='middle' font-family='Segoe UI Semibold, Segoe UI' font-weight='600' font-size='12' fill='" & _ColVar & "'>" & _VarTxt & "</text>"
+		        & _Spark
+		        & "</svg>"
+		    RETURN
+		        "data:image/svg+xml;utf8," & SUBSTITUTE( SUBSTITUTE( _Svg, "%", "%25" ), "#", "%23" )
+	lineageTag: 48f6da7a-7178-4fb1-94a3-83c7f2a27990
+

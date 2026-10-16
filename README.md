@@ -6,13 +6,13 @@ MedOptima Distribution est un distributeur de parapharmacie **fictif** (4 régio
 
 ## Contenu
 
-- `Rapport MedOptima.pbip` – point d'entrée à ouvrir dans Power BI Desktop
-- `Rapport MedOptima.SemanticModel/` – modèle sémantique au format TMDL
-- `Rapport MedOptima.Report/` – définition du rapport (PBIR)
+- `Pilotage commercial MedOptima.pbip` – point d'entrée à ouvrir dans Power BI Desktop
+- `MedOptima.SemanticModel/` – modèle sémantique au format TMDL
+- `Pilotage commercial MedOptima.Report/` – définition du rapport (PBIR)
 
 ## Ouvrir le projet
 
-1. Cloner le repo puis ouvrir `Rapport MedOptima.pbip` dans Power BI Desktop.
+1. Cloner le repo puis ouvrir `Pilotage commercial MedOptima.pbip` dans Power BI Desktop.
 2. Dans **Transformer les données > Gérer les paramètres**, renseigner `CheminFichier` avec le chemin local du classeur `MedOptima_Distribution_Donnees.xlsx` (non inclus dans le repo).
 3. Actualiser.
 

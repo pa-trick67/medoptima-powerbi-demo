@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "MedOptima"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "2bec4500-bd1c-49e0-803d-22a8a068295c"
+  }
+}
