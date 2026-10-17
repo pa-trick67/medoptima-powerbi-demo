@@ -1,13 +1,13 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "5404cd81e7bbe3b24190",
   "position": {
     "x": 0,
     "y": 0,
-    "z": 12001,
+    "z": 10000,
     "height": 58.960629921259837,
     "width": 1904.1212956581667,
-    "tabOrder": 9000
+    "tabOrder": 7000
   },
   "visualGroup": {
     "displayName": "grp_header",

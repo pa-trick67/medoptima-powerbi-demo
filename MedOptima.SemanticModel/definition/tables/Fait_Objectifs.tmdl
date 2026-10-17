@@ -5,7 +5,7 @@ table Fait_Objectifs
 		dataType: int64
 		formatString: 0
 		lineageTag: c2481d3e-fb9d-4d2a-8117-367a6304f8f4
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: Période
 
 		annotation SummarizationSetBy = Automatic
@@ -33,7 +33,8 @@ table Fait_Objectifs
 				let
 				  Fait_Objectifs = fx_loadData("Fait_Objectifs", false),
 				  #"Table transposée" = Table.Transpose(Fait_Objectifs),
-				  #"Rempli vers le bas" = Table.FillDown(#"Table transposée", {"Column1"}),
+				  #"Autres colonnes supprimées 1" = Table.SelectColumns(#"Table transposée", {"Column1", "Column2", "Column3", "Column4", "Column5", "Column6", "Column7", "Column8", "Column9", "Column10", "Column11", "Column12", "Column13", "Column14"}),
+				  #"Rempli vers le bas" = Table.FillDown(#"Autres colonnes supprimées 1", {"Column1"}),
 				  #"Colonne personnalisée ajoutée" = Table.AddColumn(#"Rempli vers le bas", "Période", each if [Column2] = null then null  else [Column2] & Text.End(Text.Trim([Column1]),5)),
 				  #"Type de colonne changé avec les paramètres régionaux" = Table.TransformColumnTypes(#"Colonne personnalisée ajoutée", {{"Période", type date}}, "fr-FR"),
 				  transCol = Table.TransformColumns(#"Type de colonne changé avec les paramètres régionaux",{{"Période", each Int64.From(Date.ToText(_, "yyyyMM")), Int64.Type}}),

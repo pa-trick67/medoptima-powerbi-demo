@@ -1,23 +1,36 @@
-expression fx_loadData =
+expression fx_loadData = ```
 		let
 		    Source = (itemName as text, optional isKindTable as logical) as table =>
 		    [
-		        Classeur = Excel.Workbook(
+		        ClasseurLoc = Excel.Workbook(
 		            File.Contents(CheminFichier),
 		            null,
 		            true
 		        ),
+		        ClasseurLig = Excel.Workbook(Web.Contents("https://docs.google.com/spreadsheets/d/e/2PACX-1vSrfKPQTEAxS44vW3EU8LRdFM-puD5tRmtzK9GUwy2aT78hE7LGWpwmbe6TieAR2w/pub?output=xlsx"), null, true),      
 		        Kind = if isKindTable = null then "Table" else "Sheet",
-		        Nav = Classeur{[Item = itemName, Kind = Kind]}[Data]
+		        Classeur_mode = if Mode = "Ligne" then ClasseurLig else ClasseurLoc,
+		        Nav = Classeur_mode{[Item = itemName, Kind = Kind]}[Data]
 		    ][Nav]
 		in
 		    Source
+		```
 	lineageTag: 478259e4-8c92-46ce-adc1-756bc2aed40d
 
 	annotation PBI_ResultType = Function
 
-expression CheminFichier = "D:\03 - Work\KAJY Partners\Conférence Excel BI\MedOptima\MedOptima_Distribution_Donnees.xlsx" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+expression CheminFichier = "D:\03 - Work\KAJY Partners\Conférence Excel BI\MedOptima\MedOptima_Distribution_Donnees.xlsx" meta [IsParameterQuery = true, IsParameterQueryRequired = true, Type = type text]
 	lineageTag: 20a08c24-ecba-4dba-a4c8-1522d80f86cc
+
+	annotation PBI_ResultType = Text
+
+/// Le fichier excel source est en local ou en ligNE
+expression Mode =
+		let
+		    Source = "Ligne" meta [IsParameterQuery = true, IsParameterQueryRequired = true, Type = type text, List = {"Local", "Ligne"}, DefaultValue = "Ligne"]
+		in
+		    Source
+	lineageTag: 6b069a00-872b-4880-9dcb-eb03d0cb5619
 
 	annotation PBI_ResultType = Text
 

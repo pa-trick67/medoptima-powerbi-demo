@@ -1,0 +1,56 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/bookmark/2.1.0/schema.json",
+  "displayName": "CA Barchart",
+  "name": "b64b305a749be8c6995a",
+  "options": {
+    "applyOnlyToTargetVisuals": true,
+    "targetVisualNames": [
+      "6e924effd2f84c478659",
+      "526d0a47379baccca7bb",
+      "bf0b362e8158f012080b",
+      "bdc1875d234658205feb"
+    ],
+    "suppressActiveSection": true,
+    "suppressData": true
+  },
+  "explorationState": {
+    "version": "1.0",
+    "activeSection": "1b9ff252564470550718",
+    "sections": {
+      "1b9ff252564470550718": {
+        "visualContainers": {
+          "6e924effd2f84c478659": {
+            "singleVisual": {
+              "visualType": "clusteredColumnChart",
+              "objects": {}
+            }
+          },
+          "526d0a47379baccca7bb": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {}
+            }
+          },
+          "bf0b362e8158f012080b": {
+            "singleVisual": {
+              "visualType": "lineChart",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "bdc1875d234658205feb": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

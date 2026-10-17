@@ -9,7 +9,7 @@ model Model
 
 annotation __PBI_TimeIntelligenceEnabled = 0
 
-annotation PBI_QueryOrder = ["Fait_Ventes","Fait_Objectifs","Fait_Stocks","Dim_Produit","Dim_Pharmacie","Dim_Commercial","Dim_Region","fx_loadData","CheminFichier"]
+annotation PBI_QueryOrder = ["Fait_Ventes","Fait_Objectifs","Fait_Stocks","Dim_Produit","Dim_Pharmacie","Dim_Commercial","Dim_Region","fx_loadData","CheminFichier","Mode"]
 
 annotation PBI_ProTooling = ["DevMode","MCP-PBIModeling"]
 

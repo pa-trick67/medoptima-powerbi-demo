@@ -1,0 +1,56 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/bookmark/2.1.0/schema.json",
+  "displayName": "CA Linechart",
+  "name": "ad561a4df61308ee7e50",
+  "options": {
+    "applyOnlyToTargetVisuals": true,
+    "targetVisualNames": [
+      "bf0b362e8158f012080b",
+      "bdc1875d234658205feb",
+      "6e924effd2f84c478659",
+      "526d0a47379baccca7bb"
+    ],
+    "suppressActiveSection": true,
+    "suppressData": true
+  },
+  "explorationState": {
+    "version": "1.0",
+    "activeSection": "1b9ff252564470550718",
+    "sections": {
+      "1b9ff252564470550718": {
+        "visualContainers": {
+          "bf0b362e8158f012080b": {
+            "singleVisual": {
+              "visualType": "lineChart",
+              "objects": {}
+            }
+          },
+          "bdc1875d234658205feb": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {}
+            }
+          },
+          "6e924effd2f84c478659": {
+            "singleVisual": {
+              "visualType": "clusteredColumnChart",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "526d0a47379baccca7bb": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

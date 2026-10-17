@@ -315,6 +315,7 @@ table _Mesures
 			    CALCULATE( [Quantité vendue], SAMEPERIODLASTYEAR( _Dates ) )
 		formatString: #,0
 		displayFolder: 02 Temps
+		lineageTag: e782974c-633c-435a-b8cf-2486dd3ba738
 
 	column Colonne1
 		dataType: int64
