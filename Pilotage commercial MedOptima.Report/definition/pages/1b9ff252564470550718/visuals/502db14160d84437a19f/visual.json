@@ -7,7 +7,7 @@
     "z": 1000,
     "height": 58.221915920055132,
     "width": 144.2315644383184,
-    "tabOrder": 1000
+    "tabOrder": 3000
   },
   "visual": {
     "visualType": "slicer",
@@ -244,6 +244,19 @@
                       "Percent": 0.6
                     }
                   }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "selection": [
+        {
+          "properties": {
+            "strictSingleSelect": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
                 }
               }
             }

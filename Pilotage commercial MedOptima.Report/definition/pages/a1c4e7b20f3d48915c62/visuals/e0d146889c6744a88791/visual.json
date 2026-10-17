@@ -2,33 +2,19 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "e0d146889c6744a88791",
   "position": {
-    "x": 24.188976377952756,
-    "y": 613.79527559055111,
-    "z": 11000,
-    "height": 442.96062992125979,
-    "width": 1130.8346456692914,
+    "x": 974.98622589531692,
+    "y": 213.33333333333334,
+    "z": 8000,
+    "height": 828.65013774104693,
+    "width": 918.56749311294777,
     "tabOrder": 300
   },
   "visual": {
-    "visualType": "tableEx",
+    "visualType": "pivotTable",
     "query": {
       "queryState": {
-        "Values": {
+        "Rows": {
           "projections": [
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "Dim_Produit"
-                    }
-                  },
-                  "Property": "Produit"
-                }
-              },
-              "queryRef": "Dim_Produit.Produit",
-              "nativeQueryRef": "Produit"
-            },
             {
               "field": {
                 "Column": {
@@ -41,8 +27,28 @@
                 }
               },
               "queryRef": "Dim_Produit.Categorie",
-              "nativeQueryRef": "Catégorie"
+              "nativeQueryRef": "Catégorie",
+              "active": true
             },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Dim_Produit"
+                    }
+                  },
+                  "Property": "Produit"
+                }
+              },
+              "queryRef": "Dim_Produit.Produit",
+              "nativeQueryRef": "Produit",
+              "active": true
+            }
+          ]
+        },
+        "Values": {
+          "projections": [
             {
               "field": {
                 "Measure": {
@@ -125,7 +131,8 @@
                 }
               },
               "queryRef": "_Mesures.Couverture stock (jours)",
-              "nativeQueryRef": "Couverture (jours)"
+              "nativeQueryRef": "Couverture (jours)",
+              "displayName": "Couverture (jours)"
             }
           ]
         }
@@ -148,6 +155,44 @@
         ],
         "isDefaultSort": true
       }
+    },
+    "expansionStates": [
+      {
+        "roles": [
+          "Rows"
+        ],
+        "levels": [
+          {
+            "queryRefs": [
+              "Dim_Produit.Categorie"
+            ],
+            "isPinned": true
+          },
+          {
+            "queryRefs": [
+              "Dim_Produit.Produit"
+            ],
+            "isCollapsed": true,
+            "isPinned": true
+          }
+        ],
+        "root": {}
+      }
+    ],
+    "objects": {
+      "blankRows": [
+        {
+          "properties": {
+            "showBlankRows": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
     },
     "visualContainerObjects": {
       "title": [

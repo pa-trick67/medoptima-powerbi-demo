@@ -266,6 +266,7 @@ table _Mesures
 			        _Nb <= 3, CONCATENATEX( _Sel, FORMAT( 'Dim_Date'[Année], "0" ), ", ", 'Dim_Date'[Année], ASC ),
 			        _Nb & " années" )
 		displayFolder: 06 Sélection
+		lineageTag: 0f217e78-5262-42af-9efc-4e445d54b316
 
 	/// Texte de la région sélectionnée (tient aussi compte du commercial sélectionné : affiche sa région). « Toutes les régions » si aucun filtre, la liste si 2-3 régions.
 	measure 'Région sélectionnée' =
@@ -274,10 +275,11 @@ table _Mesures
 			VAR _Nb  = COUNTROWS( _Sel )
 			RETURN
 			    SWITCH( TRUE(),
-			        _Nb = COUNTROWS( ALL( Dim_Region[Region] ) ), "Toutes les régions",
-			        _Nb <= 3, CONCATENATEX( _Sel, Dim_Region[Region], ", ", Dim_Region[Region], ASC ),
+			        _Nb = COUNTROWS( ALL( Dim_Region[Region] ) ), "",
+			        _Nb <= 1, " - " & CONCATENATEX( _Sel, Dim_Region[Region], ", ", Dim_Region[Region], ASC ),
 			        _Nb & " régions" )
 		displayFolder: 06 Sélection
+		lineageTag: d8b43a18-7a07-4d08-a4b0-2bb0c926e024
 
 	/// Texte du commercial sélectionné : « Tous les commerciaux » si aucun filtre, la liste si 2-3 commerciaux, sinon le nombre de commerciaux (ex. « 4 commerciaux » quand une région est filtrée).
 	measure 'Commercial sélectionné' =
@@ -290,6 +292,29 @@ table _Mesures
 			        _Nb <= 3, CONCATENATEX( _Sel, Dim_Commercial[Nom_Commercial], ", ", Dim_Commercial[Nom_Commercial], ASC ),
 			        _Nb & " commerciaux" )
 		displayFolder: 06 Sélection
+		lineageTag: ca2880e7-ad03-4283-a88a-c23ee0e468e5
+
+	/// Catégorie de produits avec le plus fort CA HT dans la sélection (segments et filtres respectés). En cas d'égalité, les catégories sont listées.
+	measure 'Top 1 Catégorie (CA)' =
+			
+			VAR _Top =
+			    TOPN( 1,
+			        FILTER( ALLSELECTED( Dim_Produit[Categorie] ), [CA HT] > 0 ),
+			        [CA HT], DESC )
+			RETURN
+			    CONCATENATEX( _Top, Dim_Produit[Categorie], ", ", Dim_Produit[Categorie], ASC )
+		displayFolder: 01 Ventes
+		lineageTag: 6bb34d42-cd27-4f47-a321-4741a8dba3f4
+
+	/// Quantité vendue de l'année précédente, limitée aux mois où le CA de la période courante est > 0 (même règle que CA HT N-1).
+	measure 'Quantité vendue N-1' =
+			
+			VAR _MoisActifs = FILTER( VALUES( 'Dim_Date'[AnnéeMoisNum] ), [CA HT] > 0 )   -- mois de N avec du CA
+			VAR _Dates = CALCULATETABLE( VALUES( 'Dim_Date'[Date] ), _MoisActifs )
+			RETURN
+			    CALCULATE( [Quantité vendue], SAMEPERIODLASTYEAR( _Dates ) )
+		formatString: #,0
+		displayFolder: 02 Temps
 
 	column Colonne1
 		dataType: int64

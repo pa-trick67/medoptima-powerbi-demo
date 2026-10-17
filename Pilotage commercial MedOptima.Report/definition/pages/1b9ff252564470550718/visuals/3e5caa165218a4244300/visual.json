@@ -7,7 +7,7 @@
     "z": 4000,
     "height": 58.960629921259837,
     "width": 220.72440944881888,
-    "tabOrder": 12001
+    "tabOrder": 2000
   },
   "visual": {
     "visualType": "image",
@@ -54,6 +54,13 @@
               "expr": {
                 "Literal": {
                   "Value": "false"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'logo'"
                 }
               }
             }

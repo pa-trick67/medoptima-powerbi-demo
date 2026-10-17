@@ -11,7 +11,7 @@
       "type": "SharedResources"
     },
     "customTheme": {
-      "name": "MedOptima_Marque_Fond_v2.json",
+      "name": "MedOptima_Marque_Fond_v3.json",
       "reportVersionAtImport": {
         "visual": "2.13.0",
         "report": "3.4.0",
@@ -75,8 +75,8 @@
           "type": "Image"
         },
         {
-          "name": "MedOptima_Marque_Fond_v2.json",
-          "path": "MedOptima_Marque_Fond_v2.json",
+          "name": "MedOptima_Marque_Fond_v3.json",
+          "path": "MedOptima_Marque_Fond_v3.json",
           "type": "CustomTheme"
         }
       ]

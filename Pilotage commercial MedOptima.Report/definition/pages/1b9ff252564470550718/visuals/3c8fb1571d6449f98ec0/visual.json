@@ -7,7 +7,7 @@
     "z": 3000,
     "height": 58.221915920055132,
     "width": 224.94831150930392,
-    "tabOrder": 3000
+    "tabOrder": 1000
   },
   "visual": {
     "visualType": "slicer",
@@ -28,7 +28,8 @@
               },
               "queryRef": "Dim_Commercial.Nom_Commercial",
               "nativeQueryRef": "Commercial",
-              "active": true
+              "active": true,
+              "displayName": "Commercial"
             }
           ]
         }

@@ -4,7 +4,7 @@
   "position": {
     "x": 1155,
     "y": 80,
-    "z": 6000,
+    "z": 3000,
     "height": 118,
     "width": 361,
     "tabOrder": 130
@@ -90,6 +90,21 @@
               "expr": {
                 "Literal": {
                   "Value": "10D"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
                 }
               }
             }

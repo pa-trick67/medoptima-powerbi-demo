@@ -2,15 +2,15 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "445f388c2283496288c4",
   "position": {
-    "x": 24,
-    "y": 214,
-    "z": 8000,
-    "height": 384,
-    "width": 613,
+    "x": 26.464507236388698,
+    "y": 213.039283252929,
+    "z": 5000,
+    "height": 385.05858028945556,
+    "width": 407.55341144038596,
     "tabOrder": 200
   },
   "visual": {
-    "visualType": "clusteredBarChart",
+    "visualType": "donutChart",
     "query": {
       "queryState": {
         "Category": {
@@ -166,7 +166,7 @@
           }
         }
       ],
-      "valueAxis": [
+      "legend": [
         {
           "properties": {
             "show": {
@@ -179,23 +179,81 @@
           }
         }
       ],
-      "legend": [
+      "value": [
         {
           "properties": {
-            "showGradientLegend": {
+            "value": {
               "expr": {
-                "Literal": {
-                  "Value": "false"
-                }
-              }
-            },
-            "show": {
-              "expr": {
-                "Literal": {
-                  "Value": "false"
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Mesures"
+                    }
+                  },
+                  "Property": "Top 1 Catégorie (CA)"
                 }
               }
             }
+          },
+          "selector": {
+            "data": [
+              {
+                "dataViewWildcard": {
+                  "matchingOption": 0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "20D"
+                }
+              }
+            },
+            "textWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "label": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        },
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Top Catégorie'"
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "dataViewWildcard": {
+                  "matchingOption": 0
+                }
+              }
+            ]
           }
         }
       ]

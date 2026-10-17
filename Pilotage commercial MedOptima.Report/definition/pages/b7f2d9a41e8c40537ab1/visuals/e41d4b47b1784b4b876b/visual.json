@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "e41d4b47b1784b4b876b",
   "position": {
-    "x": 24.188976377952756,
-    "y": 627.40157480314951,
+    "x": 24.683195592286502,
+    "y": 218.62258953168046,
     "z": 11000,
-    "height": 441.44881889763775,
-    "width": 829.98425196850394,
+    "height": 442.53443526170804,
+    "width": 971.46005509641884,
     "tabOrder": 11000
   },
   "visual": {
@@ -34,6 +34,21 @@
         },
         "Rows": {
           "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Dim_Region"
+                    }
+                  },
+                  "Property": "Region"
+                }
+              },
+              "queryRef": "Dim_Region.Region",
+              "nativeQueryRef": "Region",
+              "active": true
+            },
             {
               "field": {
                 "Column": {
@@ -71,6 +86,29 @@
         }
       }
     },
+    "expansionStates": [
+      {
+        "roles": [
+          "Rows"
+        ],
+        "levels": [
+          {
+            "queryRefs": [
+              "Dim_Region.Region"
+            ],
+            "isPinned": true
+          },
+          {
+            "queryRefs": [
+              "Dim_Commercial.Nom_Commercial"
+            ],
+            "isCollapsed": true,
+            "isPinned": true
+          }
+        ],
+        "root": {}
+      }
+    ],
     "objects": {
       "columnWidth": [
         {
@@ -145,6 +183,19 @@
               }
             ],
             "metadata": "_Mesures.Taux atteinte %"
+          }
+        }
+      ],
+      "general": [
+        {
+          "properties": {
+            "layout": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Outline'"
+                }
+              }
+            }
           }
         }
       ]

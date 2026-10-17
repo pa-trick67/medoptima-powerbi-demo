@@ -2,12 +2,12 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "7a856e4bcf1c42afbcf2",
   "position": {
-    "x": 241.66666666666669,
-    "y": 8.3333333333333339,
+    "x": 242.15024121295659,
+    "y": 7.9393521709166093,
     "z": 0,
-    "height": 50,
-    "width": 825,
-    "tabOrder": 0
+    "height": 50.282563749138525,
+    "width": 993.74224672639559,
+    "tabOrder": 4000
   },
   "visual": {
     "visualType": "textbox",
@@ -45,9 +45,36 @@
                     }
                   },
                   {
-                    "value": "  ",
+                    "value": " ",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontWeight": "bold",
+                      "fontFamily": "Verdana",
+                      "fontSize": "20pt",
+                      "color": "#1a2b4a"
+                    }
+                  },
+                  {
+                    "value": {
+                      "propertyIdentifier": {
+                        "objectName": "values",
+                        "propertyName": "expr"
+                      },
+                      "selector": {
+                        "id": "region"
+                      }
+                    },
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontFamily": "Verdana",
+                      "fontSize": "20pt",
+                      "color": "#1a2b4a"
+                    }
+                  },
+                  {
+                    "value": " ",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontFamily": "Verdana",
                       "fontSize": "20pt",
                       "color": "#1a2b4a"
                     }
@@ -96,6 +123,34 @@
           },
           "selector": {
             "id": "Valeur"
+          }
+        },
+        {
+          "properties": {
+            "expr": {
+              "expr": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Mesures"
+                    }
+                  },
+                  "Property": "Région sélectionnée"
+                },
+                "Annotations": {
+                  "NaturalLanguage": {
+                    "version": 1,
+                    "kind": "NaturalLanguage",
+                    "annotation": {
+                      "name": "region"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "selector": {
+            "id": "region"
           }
         }
       ]
@@ -147,6 +202,13 @@
               "expr": {
                 "Literal": {
                   "Value": "false"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'title'"
                 }
               }
             }
